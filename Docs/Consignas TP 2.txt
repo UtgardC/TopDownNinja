@@ -1,0 +1,181 @@
+CONSIGNA PARTE 1
+
+Desarrollar un videojuego 2D en Unity aplicando conceptos fundamentales de Programación Orientada a Objetos (POO), incluyendo el uso obligatorio de interfaces.
+
+
+REQUISITOS DEL PROYECTO
+
+El juego debe ser Plataforma 2D o Top-Down 2D.
+
+
+PROGRAMACIÓN ORIENTADA A OBJETOS
+
+El proyecto debe implementar:
+
+- Clases y objetos
+- Métodos con parámetros y retornos
+- Encapsulamiento
+- Abstracción
+- Herencia
+- Polimorfismo
+
+
+USO OBLIGATORIO DE INTERFACES
+
+Se deberá implementar al menos una interfaz en el proyecto.
+
+Ejemplos:
+
+- IDamageable
+- ICollectible
+- IInteractable
+- IMovable
+
+La interfaz deberá ser utilizada por diferentes objetos del juego.
+
+
+MECÁNICAS OBLIGATORIAS
+
+Jugador:
+
+- Movimiento funcional
+- Sistema de vida
+
+Enemigos:
+
+- Al menos 2 tipos diferentes de enemigos
+- Un jefe final
+
+Gameplay:
+
+- Colisiones
+- Sistema de puntos o coleccionables
+- Power-Up o mejora temporal
+- Objetivo final del nivel
+
+
+ENTREGA
+
+- Proyecto completo de Unity
+- Código fuente organizado (GitHub)
+- Escena jugable funcional
+
+
+CRITERIOS DE EVALUACIÓN
+
+- Correcta aplicación de POO
+- Uso de interfaces
+- Organización del código
+- Funcionamiento del juego
+- Creatividad y diseño general
+
+
+
+CONSIGNA PARTE 2
+
+En esta segunda parte del trabajo práctico, se explorarán los fundamentos de la Programación Orientada a Objetos (POO) aplicados al desarrollo de un juego en Unity (ya sea de tipo plataforma 2D o top-down).
+
+Se trabajará con conceptos esenciales como Clases, Objetos, Métodos, Interfaces, Eventos y los Cuatro Pilares de la POO.
+
+
+REQUISITOS EXTRA
+
+- El juego debe contener 2 niveles:
+  - Un nivel tutorial donde se expliquen las mecánicas básicas.
+  - Un nivel principal de no más de 5 minutos de duración.
+
+
+CLASES Y OBJETOS
+
+- Crear clases para los elementos principales del juego (jugador, enemigos, plataformas, etc.).
+- Instanciar objetos a partir de estas clases y relacionarlos entre sí.
+
+
+MÉTODOS CON PARÁMETROS Y RETORNO
+
+- Implementar métodos que acepten parámetros y devuelvan valores.
+- Ejemplos: calcular daño, aplicar fuerza de salto, detectar distancia, etc.
+
+
+INTERFACES EN C#
+
+- Diseñar e implementar interfaces para definir comportamientos comunes entre distintos tipos de objetos.
+- Ejemplo: una interfaz IDamageable para objetos que pueden recibir daño, o ICollectible para objetos recolectables.
+
+
+EVENTOS CON ACTION
+
+- Usar eventos y delegados (Action) para manejar interacciones entre clases de manera desacoplada.
+- Ejemplo: notificar cuando el jugador recoge un coleccionable o pierde una vida.
+
+
+LOS CUATRO PILARES DE LA PROGRAMACIÓN ORIENTADA A OBJETOS
+
+- Abstracción: Definir solo lo necesario para representar a un objeto.
+- Encapsulamiento: Mantener la lógica interna privada y exponer métodos públicos adecuados.
+- Herencia: Crear clases base con comportamiento común y extenderlas.
+- Polimorfismo: Permitir que objetos derivados se comporten de forma distinta bajo una misma interfaz o clase base.
+
+
+PASOS A SEGUIR
+
+1. Diseño de Clases
+
+Identificar las entidades principales del juego y definir las clases correspondientes.
+
+2. Aplicación de Métodos, Interfaces y Eventos
+
+Agregar métodos, interfaces y eventos necesarios para manejar las interacciones y comportamientos del juego.
+
+3. Aplicación de los 4 Pilares
+
+Aplicar correctamente los principios de la POO en el diseño e implementación de las clases.
+
+
+MECÁNICAS BÁSICAS
+
+- Movimiento del personaje principal (moverse, saltar o desplazarse según el tipo de juego).
+- Interacción con plataformas, obstáculos y enemigos.
+- Sistema de vidas, salud y puntuación.
+
+
+ENEMIGOS
+
+- Enemigos básicos con patrones simples de movimiento.
+- Enemigos avanzados con IA básica: patrullaje, persecución, ataque a distancia.
+- Jefe final con comportamiento especial.
+
+
+COLECCIONABLES Y POWER-UPS
+
+- Objetos que incrementen la puntuación del jugador.
+- Power-ups que otorguen habilidades temporales (velocidad, salto alto, invulnerabilidad, etc.).
+
+
+ESTRUCTURA DEL JUEGO
+
+- Nivel 1: Tutorial = Enseñar mecánicas básicas al jugador.
+- Nivel 2: Nivel Principal = Implementar los desafíos reales del juego, con enemigos, objetivos y coleccionables.
+
+Duración máxima estimada del juego: 5 minutos.
+
+
+PUNTOS EXTRA
+
+Los siguientes 3 ítems son opcionales, pero si se implementan correctamente, el alumno o grupo puede obtener una mejora en su nota final del trabajo práctico.
+Cada implementación será evaluada según su corrección, uso adecuado y aplicación en el contexto del juego.
+La suma de los puntos extra no puede superar los 2 puntos sobre la nota base obtenida, y se aplicará siempre que el trabajo esté completo y funcional.
+
+
+USO DE LINQ EN EL JUEGO
+Implementar consultas con LINQ para realizar operaciones sobre listas o colecciones del juego.
+Ejemplos posibles:
+- Ordenar enemigos por distancia al jugador.
+- Filtrar power-ups activos o inactivos.
+- Detectar cuál es el coleccionable más cercano.
+
+IMPLEMENTACIÓN DE UNA CLASE GENÉRICA T
+Diseñar e implementar una clase genérica que pueda trabajar con diferentes tipos de datos u objetos del juego.
+
+USO DE MÚLTIPLES EXPRESIONES LAMBDA
+Utilizar más de una expresión lambda en el proyecto para simplificar y hacer más expresivo el código.
