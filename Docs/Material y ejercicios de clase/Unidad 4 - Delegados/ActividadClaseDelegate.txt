@@ -1,0 +1,65 @@
+Objetivo general: Comprender y aplicar el uso de UnityEvent para implementar comunicación entre componentes mediante el patrón de diseño observador, desacoplando la lógica del juego de la interfaz de usuario.
+
+
+
+Ejercicio 1: Evento de Salud del Jugador
+Objetivo: Crear y disparar un evento personalizado que notifique cuando la salud del jugador cambia.
+
+Script PlayerHealth:
+
+Definir una variable que almacene la salud del jugador.
+Declarar un UnityEvent que se dispare cuando la salud se modifique.
+Invocar el evento cada vez que el valor de la salud se actualice.
+
+
+Script HealthDisplay:
+
+Suscribirse al evento de salud para actualizar un componente UI Text cada vez que el valor cambie.
+
+
+Ejercicio 2: Evento de Recolección de Objetos
+Objetivo: Utilizar eventos para notificar cuando el jugador recolecta un objeto.
+
+Script Collectible:
+
+Declarar un UnityEvent que se dispare al momento de recolectar el objeto.
+Script Inventory:
+
+Suscribirse al evento de recolección para actualizar el inventario del jugador.
+Configuración en el Inspector:
+
+Asignar el script Inventory al objeto del jugador.
+Vincular el método AddItem() del script Inventory al evento onCollected del objeto Collectible.
+
+
+Ejercicio 3: Evento de Cambio de Estado del Juego
+Objetivo: Implementar eventos para gestionar los cambios de estado del juego, como iniciar o pausar la partida.
+
+Script GameStateManager:
+
+Declarar UnityEvents independientes para iniciar y pausar el juego.
+Script GameUI:
+
+Suscribirse a ambos eventos para mostrar u ocultar elementos de la interfaz según el estado actual del juego.
+
+
+Ejercicio 4: Evento de Cambio de Nivel
+Objetivo: Emplear eventos para notificar y gestionar los cambios de nivel.
+
+Script LevelManager:
+
+Declarar un UnityEvent que se dispare cuando el nivel cambie.
+Script LevelDisplay:
+
+Suscribirse al evento para actualizar la información del nivel en la interfaz de usuario.
+
+
+Ejercicio 5: Evento de Interacción con NPC
+Objetivo: Utilizar eventos para gestionar las interacciones del jugador con NPCs (Non-Player Characters).
+
+Script NPC:
+
+Declarar un UnityEvent que se dispare cuando el jugador interactúe con el NPC.
+Script DialogueManager:
+
+Suscribirse al evento de interacción para mostrar un diálogo en la interfaz de usuario.
