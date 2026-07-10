@@ -1,0 +1,245 @@
+=== Pagina 1 ===
+UML
+Lenguaje unificado de modelado
+
+=== Pagina 2 ===
+QUE ES UML ?
+Language (Lenguaje): No es un lenguaje de programación (como C#), sino un
+lenguaje visual. Se lee con los ojos, no con el compilador.
+Unified (Unificado): Antes cada programador dibujaba los sistemas como
+quería. UML unificó los símbolos para que un programador en Argentina, uno
+en Japón y uno en Microsoft entiendan lo mismo al ver un dibujo.
+Modeling (Modelado): Es crear una representación simplificada de la
+realidad. No dibujamos el código entero, dibujamos solo las "piezas" (clases) y
+cómo se conectan.
+
+=== Pagina 3 ===
+PARA QUÉ SIRVE EN UNITY ?
+En el desarrollo de juegos, es muy fácil terminar con lo que llamamos "Código
+Espagueti" (scripts todos enredados entre sí). UML nos sirve para:
+Planificar el sistema: Saber quién conoce a quién antes de crear los scripts.
+Comunicar ideas: Si trabajás en un equipo, le pasás el diagrama a otro
+programador y él ya sabe qué variables y métodos tiene que crear sin que le
+expliques nada.
+Documentar: Si dejás el proyecto 6 meses y volvés, el diagrama te recuerda
+cómo funcionaba todo sin tener que leer 50 scripts de nuevo.
+
+=== Pagina 4 ===
+DIAGRAMA DE CLASE
+Un diagramad e clase  muestra las clases del sistema y relaciones.Describe la vista
+estatica de un sistema.
+
+=== Pagina 5 ===
+DIAGRAMA DE CLASE
+1. Mermaid.js
+No es una página en sí, sino un lenguaje que muchas páginas usan. Escribís texto y se transforma en diagrama al instante.
+Página: Mermaid Live Editor
+Por qué usarla: Podés guardar el código en un archivo .txt y reconstruir el diagrama cuando quieras.
+2. Draw.io (Diagrams.net)
+Es el estándar de la industria por ser gratuito y muy completo.
+Página: app.diagrams.net
+Por qué usarla: Tiene una biblioteca específica de UML 2.5. Podés arrastrar las clases, las flechas de agregación (diamante vacío) y composición (diamante lleno) muy fácil. Se integra con
+Google Drive.
+3. PlantUML
+Es el "abuelo" de los diagramas por código. Es extremadamente potente.
+Página: PlantText
+Por qué usarla: Es muy rápido para clases grandes. Si tenés que definir 20 scripts de Unity y sus relaciones, es mucho más veloz que andar arrastrando cajitas con el mouse.
+4. Lucidchart
+Es una opción más profesional y visualmente "pulida".
+Página: Lucidchart
+Por qué usarla: Tiene una función genial: podés importar código de C# y, en algunos casos, intenta generarte el diagrama solo (aunque la versión gratuita es limitada).
+
+=== Pagina 6 ===
+QUE ES UNA CLASE?
+Una clase es una descripción de un conjunto de objetos que comparten los mismos
+atributos (estado), operaciones (mensajes), relaciones y semántica.
+Variables en Unity
+(Público): La variable es accesible desde otros scripts. En
+Unity, se ve automáticamente en el Inspector.
+ (Privado): Solo la clase puede usarla. 
+Tip Unity: No aparece en el Inspector, a menos que uses [SerializeField] antes de la variable.
+
+=== Pagina 7 ===
+¿Qué son las relaciones entre clases?
+Una relación es una conexión semántica entre objetos. Proveen un
+camino de comunicación entre ellos.
+Existen los siguientes tipos de relaciones
+Asociación
+Implementación
+Dependencia
+
+=== Pagina 8 ===
+D e p e n d e n c i a :  L a  c l a s e  A  p u e d e  v e r s e  a f e c t a d a  p o r  l o s  c a m b i o s  e n  l a  c l a s e  B .
+A s o c i a c i ó n :  E l  o b j e t o  A  c o n o c e  e l  o b j e t o  B .  L a  c l a s e  A  d e p e n d e  d e  B .
+A g r e g a c i ó n :  E l  o b j e t o  A  c o n c o e  e l  o b j e t o  B  y  c o n s i s t e  e n  B . L a  c l a s e  A  d e p e n d e  d e
+B .
+C o m p o s i c i ó n :  E l  o b j e t o  A  c o n o c e  e l  o b j e t o  B ,  c o n s i s t e  e n  B  y  g e s t i o n a  e l  c i c l o  d e
+v i d a  d e  B .  L a  c l a s e  A  d e p e n d e  d e  B .
+I m p l e m e n t a c i ó n :  L a  c l a s e  A  d e f i n e  m e t o d o s  d e c l a r a d o s  e n  l a  i n t e r f a z  B . L o s
+o b j e t o s  A  p u e d e n  t r a t a r s e  c o m o  B . L a  c l a s e  A  d e p e n d e  d e  B .
+H e r e n c i a :  L a  c l a s e  A  h e r e d a  l a  i n t e r f a z  y  l a  i m p l e m e n t a c i ó n  d e  l a  c l a s e  B ,  p e r o
+p u e d e  e x t e n d e r l a . E l  o b j e t o  A  p u e d e  t r a t a r s e  c o m o  B .  L a  C l a s e  A  d e p e n d e  d e  B .
+
+=== Pagina 9 ===
+D e p e n d e n c ia
+L a  d e p e n d e n c i a  e s  e l  t i p o  d e  r e l a c i ó n  m a s  b a s i c a  y  d e b i l  e n t r e  c l a s e s . E x i s t e  u n a
+d e p e n c i a  e n t r e  d o s  c l a s e s  c u a n d o  c i e r t o s  c a m b i o s  e n  l a  d e f e n i c i o n  d e  u n a  c l a s e  p u e d e
+p r o v o c a r  m o d i f i c a c i o n e s  e n  o t r a . L a  d e p e n d e c i a  o c u r r e  n o r m a l m e n t e  c u a n d o  u t i l i z a s
+n o m b r e  d e  c l a s e s  c o n c r e t a s  e n  t u  c o d i g o .  
+Player Controller
+ Game Manager
+ Por ejemplo, supongamos que tienes dos objetos: un "PlayerController" y un "GameManager", y el
+"PlayerController" necesita acceder a algunas funciones o variables del "GameManager"
+
+=== Pagina 10 ===
+Logrando asi que "PlayerController" dependa "GameManager" y se verá afectado en el caso
+de que GameManager sea modificado.
+
+=== Pagina 11 ===
+Una Dependencia es cuando una clase necesita a otra para realizar una tarea específica, pero
+no la guarda como parte de su estructura. Es como pedirle una herramienta prestada a un
+vecino: la usás y se la devolvés, no vive en tu casa.
+Ventajas
+Bajo Acoplamiento: Los cambios en una clase afectan mínimamente a la otra.
+Limpieza: No ocupas memoria guardando referencias que solo usás una vez cada tanto.
+Desventajas
+Fragilidad: Si cambias el nombre de un método en la Clase B, la Clase A no se entera hasta que intentas ejecutar
+esa acción y el juego tira error.
+Uso típico en Unity: * UI Dinámica: Un script de Moneda que al ser recolectada busca al ScoreManager solo para sumar
+puntos: FindObjectOfType<ScoreManager>().AddPoint(). No guarda al manager, solo lo "usa".
+
+=== Pagina 12 ===
+A s o c i a c i ó n
+L a  a s o c i a c i ó n  e s  u n a  r e l a c i o n  e n  l a  q u e  u n  o b j e t o  u t i l i z a  o  i n t e r a c t u a  c o n  o t r o .  L a
+a s o c i a c i o n  p u e d e  v e r s e  c o m  u n  t i p o  d e  e s p e c i a l i z a d o  d e  d e p e n d e n c i a ,  e n  l a  q u e  u n
+o b j e t o  s i e m p r e  t i e n e  a c c e s o  a  l o s  o b j e t o s  c o n  l o s  q u e  i n t e r a c t u a ,  m i e n t r a s  q u e  l a
+d e p e n d e n c i a  s i m p l e  n o  e s t a b l e  u n  v i n c u l o  p e r m a n e n t e  e n t r e  l o s  o b j e t o s .
+Player Controller
+ Enemy Manager
+ Por ejemplo, supongamos que el objeto "Player" tiene un script llamado "PlayerController" y el objeto
+"Enemy" tiene un script llamado "EnemyController".
+
+=== Pagina 13 ===
+En este ejemplo, cuando el objeto "Player" colisiona con un objeto que tenga el tag "Enemy",
+se llama al método AttackPlayer() del script "EnemyController" asociado al objeto "Enemy"
+que colisionó con el jugador. Esto establece una relación de asociación entre el objeto
+"Player" y el objeto "Enemy", donde el jugador puede interactuar con los enemigos mediante
+la colisión.
+
+=== Pagina 14 ===
+Ventajas
+Velocidad: Como ya tenés la referencia guardada (en una variable), la comunicación es
+instantánea.
+Facilidad: En Unity, es tan simple como arrastrar un objeto a una ranura del Inspector.
+Desventajas
+Dependencia de Escena: Si el objeto asociado no está en la escena, el script tira el
+famoso error NullReferenceException.
+Uso típico en Unity*: Cámaras y Seguidores: El script de SmoothCamera que tiene una variable
+public Transform target. La cámara conoce al jugador todo el tiempo para seguirlo.
+Asociación es cuando una clase tiene una referencia constante a otra. Es como tener el número de
+alguien en tu agenda: no son la misma persona, pero sabés cómo llamarlo en cualquier momento.
+
+=== Pagina 15 ===
+A g r e g a c i ó n
+L a  a g r e g a c i ó n  e s  u n  t i p o  e s p e c i a l i d a d o   d e  a s o c i a c i ó n  q u e  r e p r e s e n t a  r e l a c i o n e s  “ u n o
+a  m u c h o s ” ,  “ m u c h o s  a  m u c h o s ”  o  “ t o d o  a  p a r t e ”  e n t r e  m u l t i p l e s  o b j e t o s .
+N o r m a l m e n t e ,  c o n  l a  a g r e g a c i o ,  u n  o b j e t o  t i e n e  u n  g r u p o  d e  o t r o s  o b j e t o s  y  s i r v e
+c o m o  c o n t e n e d o r  o  c o l e c c i o n .  E l  c o m p o n e n t e  p u e d e  e x i s t i r  s i n  e l  c o n t e n e d o r  y  p u e d e
+v i n c u l a r s e  a  v a r i o s  c o n t e n e d o r e s  a l  m i s m o  t i e m p o .
+Player Controller
+ Character
+ Queremos modelar una relación de agregación donde un personaje puede contener múltiples objetos en
+su inventario.
+
+=== Pagina 16 ===
+
+
+=== Pagina 17 ===
+En este ejemplo, la clase Item representa un objeto en el juego con atributos como el nombre del
+objeto. La clase Character representa un personaje en el juego con una lista de objetos
+(inventory) que contiene los objetos que el personaje tiene en su inventario. La clase
+PlayerController simula la creación de un personaje para el jugador y agrega algunos objetos a
+su inventario para luego mostrarlos.
+Esta relación de agregación permite que los personajes del juego tengan sus propios inventarios
+de objetos, donde pueden agregar, quitar y mostrar los objetos que poseen.
+
+=== Pagina 18 ===
+Agregación es una relación de "todo a parte" donde las partes son independientes. Es como
+una carpeta con archivos: si borrás la carpeta, los archivos pueden seguir existiendo en el
+disco duro.
+Ventajas
+Reutilización: Los objetos contenidos (como los items) pueden pasar de un dueño a
+otro.
+Flexibilidad: Podés tener una lista vacía o con mil objetos sin cambiar la lógica de la
+clase.
+Desventajas
+Gestión de Listas: Requiere programar con cuidado el agregar y quitar elementos
+(List.Add, List.Remove) para no tener errores de conteo.
+ Uso típico en Unity*: Inventarios: Un Personaje que tiene una List<Item>. Si el personaje muere y
+desaparece, podés programar que los items se queden tirados en el suelo (no mueren con él).
+
+=== Pagina 19 ===
+C o m p o s ic ió n
+L a  c o m p o s i c i ó n  e s  u n  t i p o  e s p e c i f i c o  d e  a g r e g a c i o n  e n  l a  q u e  u n  o b j e t o  s e  c o m p o n e
+d e  u n a  o  m a s  i n s t a n c i a  d e l  o t r o .  L a  d i s f e r e n c i a  e n t r e  e s t a  y  o t r a s  r e l a c i o n e s  e s t a  e n
+q u e  e l  c o m p o n e n t e  s o l o  p u e d e  e x i s t i r  c o m o  p a r t e  d e l  c o n t e n e d o r .
+Player 
+ Weapon
+ Un jugador que tiene un arma como parte de su composición. Cuando el jugador es destruido, el arma
+también debe ser destruida.
+
+=== Pagina 20 ===
+Esto ejemplifica la relación
+de composición, donde el
+jugador es responsable de
+la creación y gestión del
+arma, y el arma existe solo
+mientras exista el jugador.
+
+=== Pagina 21 ===
+Composición Es la relación más fuerte. El objeto hijo es una pieza
+fundamental del padre y su existencia depende totalmente de él. Es como las
+páginas de un libro: si quemás el libro, las páginas desaparecen con él.
+Ventajas
+Seguridad: Te asegurás de que no queden objetos "sueltos" o basura
+(Memory Leaks) en el juego.
+Consistencia: El padre tiene control total sobre cuándo nace y muere
+su parte.
+Desventajas
+Rigidez: Es difícil separar las partes una vez creadas. Si querés que un
+"brazo" de un robot pase a otro, la composición te obliga a hacer
+lógica extra de destrucción y recreación.
+Uso típico en Unity Jerarquías Críticas: Un EnemigoBoss que tiene una IA_Brain y
+un SistemaDeVuelo. Si destruís al Boss con Destroy(gameObject), esos
+componentes mueren con él porque son parte de su estructura física y lógica.
+
+=== Pagina 22 ===
+UNITY TIPS
+El peligro del "Código Acoplado" (Asociación)
+Si la Clase A conoce a la B, la B a la C, y la C a la A, tenés un círculo vicioso. En Unity, esto hace que si borrás un objeto, el proyecto entero tire errores en cadena.
+Consejo: Si dos objetos se conocen demasiado, quizás deberían ser uno solo o comunicarse mediante una Dependencia puntual en lugar de una Asociación permanente.
+[SerializeField] vs Public (Visibilidad)
+Esto mantiene la relación protegida en código pero permite al diseñador asignar la Asociación arrastrando objetos en el Inspector.
+La "Dependencia" de los Componentes
+Consejo: Nunca uses GetComponent dentro de un Update(). Es como pedirle la herramienta al vecino 60 veces por segundo. Hacé la búsqueda en el Awake o Start y
+guardala como una Asociación privada.
+Composición y el método OnDestroy()
+En la Composición, el dueño es responsable de la limpieza.
+Consejo: Si usás Composición para crear un objeto mediante código (sin hacerlo hijo en la jerarquía), recordá usar OnDestroy() para eliminar manualmente la parte. Si
+no, ese objeto queda "flotando" en la memoria de Unity (Memory Leak).
+Evitá el "Objeto Dios" (Asociación excesiva)
+Consejo: Si una clase tiene más de 5 o 7 flechas de Asociación saliendo de ella, está haciendo demasiadas cosas. Dividila en clases más chicas.
+Multiplicidad y Arrays Fijos
+Consejo: Si sabés que un coche siempre tiene exactamente 4 ruedas, usá un Array fijo Rueda[4] en lugar de una List<Rueda>. Esto le dice a Unity y a otros
+programadores que la estructura es rígida y más eficiente.
+Prefabs como Plantillas de Composición
+Un Prefab es, en esencia, un diseño de Composición guardado en el disco.
+Consejo: Cuando diseñas un Prefab (ej: un enemigo con sus armas y efectos), estás definiendo que esos componentes siempre nacerán y morirán juntos. Si algo del
+Prefab debería sobrevivir a él, no lo hagas parte del Prefab, manejalo como una Agregación externa.
+
+=== Pagina 23 ===
+C O N C L U S I Ó N
+Si solo lo usás una vez: Dependencia.
+Si lo necesitás consultar seguido: Asociación.
+Si es algo que el objeto "lleva" pero puede soltar: Agregación.
+Si es algo que el objeto "es" o "forma parte de su cuerpo": Composición.

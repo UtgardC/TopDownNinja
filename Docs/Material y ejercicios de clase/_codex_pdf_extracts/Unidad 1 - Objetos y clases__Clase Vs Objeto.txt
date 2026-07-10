@@ -1,0 +1,57 @@
+=== Pagina 1 ===
+Una clase es una herramienta que tenemos para modelar
+objetos de programación, logrando que se comporten como
+queremos y hacer tantas copias de estos objetos como
+necesitemos.
+La clase está compuesta por Atributos que son sus
+indicadores y características. También se puede asociar como
+sus datos.
+Necesitará definirse sus atributos (características) primero.
+¿QUÉ ES UNA CLASE?
+
+=== Pagina 2 ===
+float speed: representando la velocidad de movimiento del
+personaje.
+int life: representando la vida del personaje.
+float jumpForce: representando la fuerza de salto del personaje.
+float damage: representando el daño del personaje al realizar el
+ataque.
+ATRIBUTOS DE LA
+CLASE: HEROE
+
+=== Pagina 3 ===
+Los Métodos  se encargan de definir los comportamientos o acciones de un objeto.
+MÉTODOS DE LA CLASE: HEROE
+Jump(): la acción que utilizará nuestro personaje para saltar.
+Attack(): la acción que utilizará nuestro personaje para atacar.
+Y guala! ya tenemos definida nuestra clase héroe en nuestro juego de plataformas genérico.
+Al tener definidos los atributos y métodos en nuestra clase, ya estará lista para poder crear distintos objetos en nuestro juego, en el caso de que
+quisiéramos.
+
+=== Pagina 4 ===
+INSTANCIA
+                  
+Una clase es un molde o una casilla donde puedes sacar
+distintos objetos con las mismas características. Este
+proceso (crear distintos objetos con las mismas
+características) es dominado “Instancia”.
+La instancia es un concepto básico de la Programación
+Orientada a Objetos, se utiliza para definir cuando un
+objeto se deriva de otro.
+
+=== Pagina 5 ===
+INSTANCI DE LA CLASE: HEROE
+Por ejemplo, si queremos tener distintos héroes dentro de nuestro juego, podemos utilizar la misma clase de héroe para cada personaje distinto.
+
+=== Pagina 6 ===
+Una clase es una estructura de programación definida por el usuario (programador) mientras que un
+objeto es un tipo de dato que surge a partir de la clase de programación.
+Las clases se definen en el proceso de desarrollo mientras que los objetos se crean en tiempo de
+ejecución, en otras palabras, las clases las definimos nosotros y los objetos se crean cuando el juego está
+en funcionamiento.
+En una clase se definen datos comunes a todos los objetos, luego los objetos son creados utilizando esa
+información y adoptan un estado particular, que puede ir cambiando en el transcurso del juego. Esto
+quiere decir que podemos tener distintos objetos que provienen de la misma clase pero difieren en sus
+estados.
+¿QUÉ DIFERENCIA HAY ENTRE
+UNA CLASE Y UN OBJETO?

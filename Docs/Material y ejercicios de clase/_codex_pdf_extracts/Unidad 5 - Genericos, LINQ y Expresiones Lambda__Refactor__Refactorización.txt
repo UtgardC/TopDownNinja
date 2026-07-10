@@ -1,0 +1,207 @@
+=== Pagina 1 ===
+El objetivo principal de la refactorización
+es luchar contra la deuda técnica.
+Transforma un desorden en código
+limpio y diseño simple.
+REFACTORIZACIÓN
+
+=== Pagina 2 ===
+El código limpio es obvio para otros programadores.
+ El código limpio no contiene duplicación.
+El código limpio contiene un número mínimo de clases.
+ El código limpio pasa todas las pruebas.
+CÓDIGO LIMPIO
+
+=== Pagina 3 ===
+DEUDA TÉCNICA
+Que es y como se resuelve
+
+=== Pagina 4 ===
+QUE ES ?
+Todos hacen su mejor esfuerzo para escribir código excelente desde cero.
+Probablemente no haya ningún programador que intencionalmente escriba código
+desordenado en perjuicio del proyecto. Pero, ¿en qué momento el código limpio se
+convierte en código sucio?
+La metáfora de “deuda técnica” en relación al código desordenado fue originalmente
+sugerida por Ward Cunningham.
+Si tomás un préstamo de un banco, esto te permite hacer compras más rápido. Pagás un
+extra para acelerar el proceso: no solo pagás el monto principal, sino también los
+intereses adicionales del préstamo. No hace falta decir que podés acumular tanto interés
+que el monto de los intereses supere tu ingreso total, haciendo imposible el pago
+completo.
+Lo mismo puede pasar con el código. Podés acelerar temporalmente sin escribir pruebas
+para nuevas funciones, pero esto gradualmente ralentiza tu progreso cada día hasta que
+eventualmente saldás la deuda escribiendo pruebas.
+
+=== Pagina 5 ===
+CAUSAS
+Presión empresarial.
+Falta de documentación.
+Refactorización retrasada.
+Falta de comunicación entre los miembros del equipo.
+Falta de seguimiento del cumplimiento.
+Desarrollo simultáneo a largo plazo en varias ramas.
+Incompetencia
+
+=== Pagina 6 ===
+CUANDO
+REFACTORIZAR?
+Al agregar una característica.
+Cuando arreglamos un error.
+Durante la revisión del código.
+Regla de tres.
+Cuando hacés algo por primera vez, simplemente hacelo.1.
+Cuando hacés algo similar por segunda vez, te molesta
+tener que repetirlo, pero igual hacelo de la misma manera.
+2.
+Cuando hacés algo por tercera vez, empezá a refactorizar.3.
+
+=== Pagina 7 ===
+METODO LARGO
+En la mayoría de los casos, es más difícil crear un nuevo método que agregar uno
+existente. Solemos decirnos : 
+"Pero son solo dos líneas, no sirve de nada crear un método completo solo para eso..." 
+Y lo único que estamos logrando con eso, es hacer que nuestro código sea menos
+legible. 
+Solución
+Como regla general, si comentas algo dentro de un método, debe tomar este código y
+ponerlo en un nuevo método. Incluso una sola línea puede y debe dividirse en un
+método separado, en el caso de que requiera explicaciones. Y si el método tiene un
+nombre descriptivo, nadie necesitará mirar el código para ver qué hace.
+
+=== Pagina 8 ===
+EXTRAER EL MÉTODO
+Solución
+Problema
+Tenes un fragmento de código que se puede agrupar en un método.
+
+=== Pagina 9 ===
+UTILIZAR OBJETOS COMO
+PARAMETROS
+Solución
+Problema
+El método contiene demasiados parámetros de entrada.
+
+=== Pagina 10 ===
+REEMPLAZAR MÉTODO 
+Solución
+Problema
+Tenes un método largo donde
+las variables locales se
+relacionan y no podes hacer
+una extracción de método.
+
+=== Pagina 11 ===
+MODIFICACIONESFRAGMENTADAS
+Solución
+Problema
+Para realizar modificaciones
+es necesario realizar muchos
+cambios pequeños en muchas
+clases diferentes.
+
+=== Pagina 12 ===
+DESCOMPONER EL
+CONDICIONAL IF
+Solución
+Problema
+Tenes un condicional "if" o "switch" complejo y es poco legible.
+
+=== Pagina 13 ===
+El código muerto aumenta innecesariamente el tamaño del proyecto.
+CÓDIGO
+ZOMBIE
+SoluciónProblema
+
+=== Pagina 14 ===
+CLASES LARGAS
+Las clases generalmente comienzan pequeñas. Pero con el tiempo, crecen a medida que
+vas trabajando en  el programa.
+Como también es el caso con los métodos largos, los programadores generalmente
+encuentran mentalmente menos agotador colocar una nueva función en una clase
+existente que crear una nueva clase para la función.
+Solución
+Cuando una clase tiene demasiadas funcionalidades, hay que dividirlas.
+
+=== Pagina 15 ===
+EXTRAER CLASE
+Solución
+Problema
+Tenes una clase con muchas funcionalidades.
+
+=== Pagina 16 ===
+EXTRAER SUBCLASE
+Solución
+Problema
+Tenes una clase con muchas funcionalidades.
+
+=== Pagina 17 ===
+EXTRAER INTERFACE
+Solución
+Problema
+Tenes una clase con muchas funcionalidades.
+
+=== Pagina 18 ===
+CLASES IDENTICAS
+Dos clases realizan funciones idénticas pero tienen diferentes nombres de métodos.
+Solución
+Renombrar los métodos.
+Agregar parámetros a los métodos.
+Mover los métodos a la clase correspondiente.
+Combinar los métodos de las clases en uno solo y agregar los parámetros si es necesario.
+
+=== Pagina 19 ===
+MALA JERARQUÍA
+Si una subclase usa solo algunos de los métodos y propiedades heredados de sus padres,
+la jerarquía está fuera de lugar. Los métodos innecesarios pueden simplemente no usarse
+o redefinirse y generar excepciones.
+Solución
+Si la herencia no tiene sentido y la subclase realmente no tiene nada en común con la
+superclase, haya que eliminar la herencia.
+En el caso contrario, elimine los campos y métodos innecesarios en la subclase. Extraiga
+todos los campos y métodos que necesita la subclase de la clase principal, colóquelos en
+una nueva superclase y configure ambas clases para heredar de ella .
+
+=== Pagina 20 ===
+CAMBIAR HERENCIA
+Solución
+Problema
+
+=== Pagina 21 ===
+MAL USO DEL CONDICIONAL SWITCH
+El uso de los operadores "switch" y "case" es uno de los sellos distintivos del código
+orientado a objetos. A menudo, el código para un solo "switch" puede estar disperso en
+diferentes lugares del programa. Cuando se agrega una nueva condición, debe encontrar
+todo el código del "switch" y modificarlo.
+Como regla general, cuando vea un cambio, debe pensar en polimorfismo.
+Solución
+Utilizar el uso correcto de las clases y mover los métodos correspondientes.
+Si no hay demasiadas condiciones en el operador y todos llaman al mismo método con
+diferentes parámetros, el polimorfismo es la mejor solución.
+
+=== Pagina 22 ===
+POLIMORFISMO POR SWITCH
+Solución
+Problema
+
+=== Pagina 23 ===
+PROBLEMAS CON LAS VARIABLES
+Los campos temporales se crean para su uso en un algoritmo que requiere una gran
+cantidad de entradas. Entonces, en lugar de crear una gran cantidad de parámetros en
+el método, el programador decide crear campos para estos datos en la clase. Estas
+campos se usan solo en el algoritmo y no se usan el resto del tiempo.
+Este tipo de código es difícil de entender. Espera ver datos en campos de objetos pero,
+por alguna razón, casi siempre están vacíos.
+Solución
+Los campos temporales y todo el código que opera en ellos se pueden colocar en una
+clase separada a través de Extraer clase
+Utilizar el patrón Null object e intégrelo en lugar del código condicional que se usó para
+verificar la existencia de los valores de las variables temporales.
+
+=== Pagina 24 ===
+NULL OBJECT
+Solución
+Problema
+
+=== Pagina 25 ===
+CONCLUSIÓN

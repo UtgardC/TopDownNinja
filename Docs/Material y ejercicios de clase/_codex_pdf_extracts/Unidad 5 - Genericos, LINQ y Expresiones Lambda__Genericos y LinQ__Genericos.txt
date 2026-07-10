@@ -1,0 +1,133 @@
+=== Pagina 1 ===
+GENERICOS <T>
+
+=== Pagina 2 ===
+Los genéricos nos permiten definir clases, métodos y estructuras
+de datos que pueden operar con cualquier tipo de datos, mientras
+mantienen la seguridad de tipos. En lugar de especificar un tipo de
+datos concreto, utilizamos un parámetro de tipo, comúnmente
+representado por "T", que puede ser sustituido por cualquier tipo.
+.
+¿QUÉ ES UN GENÉRICO?
+
+=== Pagina 3 ===
+Reutilización de código: Puedes usar la misma clase o método
+con diferentes tipos de datos.
+Seguridad de tipos: Los errores de tipo se detectan en tiempo
+de compilación en lugar de en tiempo de ejecución.
+Rendimiento: Al evitar conversiones de tipos innecesarias, se
+mejora el rendimiento del programa.
+SUS VENTAJAS
+
+=== Pagina 4 ===
+public class GenericManager<T>:
+Declara una clase pública llamada
+GenericManager que es genérica, lo que
+significa que puede manejar cualquier
+tipo T.
+: MonoBehaviour: Indica que
+GenericManager<T> hereda de
+MonoBehaviour, lo que permite que esta
+clase se adjunte a objetos en una escena
+de Unity.
+SINTAXIS
+
+=== Pagina 5 ===
+private List<T> items: Declara un
+campo privado items que es una lista
+de elementos de tipo T. Esta lista se
+inicializa como una nueva lista vacía.
+items se usa para almacenar
+instancias de T.
+SINTAXIS
+
+=== Pagina 6 ===
+public void AddItem(T item):
+Declara un método público
+AddItem que acepta un
+parámetro de tipo T llamado
+item.
+items.Add(item): Añade el item
+proporcionado a la lista items.
+SINTAXIS
+
+=== Pagina 7 ===
+public void RemoveItem(T item):
+Declara un método público
+RemoveItem que acepta un
+parámetro de tipo T llamado item.
+items.Remove(item): Elimina el
+item proporcionado de la lista
+items
+SINTAXIS
+
+=== Pagina 8 ===
+public List<T> GetItems():
+Declara un método público
+GetItems que no acepta
+parámetros y devuelve una lista
+de elementos de tipo T.
+return new List<T>(items):
+Crea y devuelve una nueva lista
+que es una copia de la lista
+items. Esto se hace para evitar
+que el llamador del método
+modifique directamente la lista
+interna items.
+SINTAXIS
+
+=== Pagina 9 ===
+Supongamos que queremos crear dos listas
+distintas utilizando la clase “ClaseGenerica”.
+Para eso debemos crear dos clases en donde
+podemos realizar la implementación.
+En este ejemplo se crearon la clase item y la clase
+enemy. 
+CASO DE USO
+
+=== Pagina 10 ===
+Deberíamos crear una clase por cada lista que
+querramos manipular.
+CASO DE USO-SIN GENERICOS
+
+=== Pagina 11 ===
+Creamos una clase para implementar dos listas
+distitnas utilizando una clase que acepte
+parametros genéricos.
+CASO DE USO-CON GENERICOS
+
+=== Pagina 12 ===
+CASO DE USO
+private ClaseGenerica<Enemy> enemyList: Declara un campo privado enemyList
+que es una instancia de ClaseGenerica que maneja objetos de tipo Enemy.
+private ClaseGenerica<Item> itemList: Declara un campo privado itemList que es
+una instancia de ClaseGenerica que maneja objetos de tipo Item.
+
+=== Pagina 13 ===
+CASO DE USO
+private ClaseGenerica<Enemy> enemyList: Declara un campo privado enemyList que es una
+instancia de ClaseGenerica que maneja objetos de tipo Enemy.
+private ClaseGenerica<Item> itemList: Declara un campo privado itemList que es una instancia
+de ClaseGenerica que maneja objetos de tipo Item.
+Se crean nuevas instancias de ClaseGenerica para manejar enemigos y objetos respectivamente.
+
+=== Pagina 14 ===
+Se crean nuevos GameObject llamados"Enemy1" y "Enemy2".Se añaden componentes Enemy a estosobjetos.Se asignan nombres a los enemigos("Goblin" y "Orc").Se añaden estos enemigos a laenemyList.
+CASO DE USO
+Se crean nuevos GameObject llamados"Item".Se añaden componentes Item a estosobjetos.Se asignan nombres a los objetos("Health Potion" y "Maná Potion").Se añaden estos objetos a la itemList.
+
+=== Pagina 15 ===
+CASO DE USO
+Se iteran todos los objetos en itemList y se imprimen sus
+nombres usando Debug.Log.
+Se iteran todos los enemigos en enemyList y se imprimen sus
+nombres usando Debug.Log.
+
+=== Pagina 16 ===
+CONCLUSION
+Como podemos ver en estos ejemplos, el uso de genéricos
+en Unity nos permite crear código más flexible, limpio y
+reutilizable. Los genéricos nos ayudan a evitar la
+duplicación de código y a mantener nuestro proyecto más
+organizado y fácil de mantener.
+CONCLUSIÓN

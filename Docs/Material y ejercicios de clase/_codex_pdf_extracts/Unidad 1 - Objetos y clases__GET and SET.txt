@@ -1,0 +1,28 @@
+=== Pagina 1 ===
+GET & SET
+
+=== Pagina 2 ===
+Del inglés Get, que significa obtener, el cual nos sirve para obtener
+(recuperar o acceder) el valor ya asignado a un atributo y utilizarlo para
+cierto método.
+ G E T T E R S
+
+=== Pagina 3 ===
+Del Inglés Set, que significa establecer, el cual nos sirve para
+asignar un valor inicial a un atributo, pero de forma explícita,
+además el Setter nunca retorna nada (Siempre es void), y solo nos
+permite dar acceso público a ciertos atributos que deseemos el
+usuario pueda modificar.
+ S E T T E R S
+
+=== Pagina 4 ===
+Para utilizar los setters y getters se tiene que declarar de la siguiente forma : 
+public string nombre;
+public string Nombre {
+    get { return nombre; } // get method
+    set { nombre = value; } // set method
+  }
+o escribirse de la forma abreviada de la siguiente forma:
+ public string Nombre { get => nombre; set => nombre = value; }
+
+=== Pagina 5 ===

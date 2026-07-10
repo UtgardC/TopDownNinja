@@ -1,0 +1,104 @@
+=== Pagina 1 ===
+PARADIGMA DE
+PROGRAMACIÓN
+
+=== Pagina 2 ===
+E s  u n  c o n j u n t o  d e  e l e m e n t o s  y  r e g l a s .
+B r i n d a  u n  m a r c o  p a r a  e l  d i s e ñ o  y  l a  c o n s t r u c c i ó n  d e
+p r o g r a m a s  ( v i d e o j u e g o s ) .
+E j e m p l o s  d e  l o s  d i s t i n t o s  p a r a d i g m a s :
+I m p e r a t i v o
+F u n c i o n a l
+L ó g i c a
+D i r i g i d o  p o r  E v e n t o s
+O b j e t o s
+. . .
+PARADIGMA DE
+PROGRAMACION
+
+=== Pagina 3 ===
+Describe paso a paso cómo debe actuar el programa mediante una secuencia de
+instrucciones que modifican el estado del sistema.
+Utiliza variables mutables, asignaciones y control de flujo explícito como ciclos
+(for, while) y condicionales (if).
+Ejemplo: Movimiento de un personaje: Un script que dice: 1. Leer entrada del
+teclado, 2. Si se presiona "W", sumar 5 a la posición Y, 3. Actualizar la posición
+del modelo en pantalla.
+PARADIGMA IMPERATIVO
+
+=== Pagina 4 ===
+Se basa en funciones puras donde un mismo valor de entrada siempre produce la
+misma salida, evitando efectos secundarios
+Promueve la inmutabilidad (los datos no cambian, se crean versiones nuevas) y el
+uso de funciones de orden superior como map, filter y reduce.
+Ejemplo: Cálculo de daño: Una función que recibe "Ataque" y "Defensa" y
+devuelve el "Daño final". No modifica las estadísticas del personaje original,
+sino que solo devuelve el número calculado para que otra parte del sistema lo
+use.
+PARADIGMA FUNCIONAL
+
+=== Pagina 5 ===
+Se basa en declarar hechos y reglas.
+Utiliza lenguajes como Prolog para definir relaciones (por ejemplo, relaciones
+familiares o lógicas) y realizar consultas sobre ellas.
+PARADIGMA LÓGICO
+
+=== Pagina 6 ===
+El flujo del programa está determinado por la detección de eventos y las
+reacciones ante ellos
+Se basa en un sistema de emisión de eventos y "oyentes" (listeners) que ejecutan
+lógica cuando algo sucede.
+PARADIGMA DIRIGIDO POR
+EVENTOS
+
+=== Pagina 7 ===
+Los sistemas están compuestos por un conjunto de objetos.
+Los objetos son responsables de llevar a cabo ciertas acciones.
+ Los objetos colaboran para llevar acabo sus responsabilidades.
+Todo es un objeto.
+ Los objetos se comunican enviando y recibiendo mensajes.
+Los objetos tienen su propia memoria ( en términos de Objetos ).
+PROGRAMACIÓN
+ORIENTADA A OBJETOS
+
+=== Pagina 8 ===
+La principal construcción es la noción de
+objetos.
+Los objetos pueden componerse o conocer
+otros objetos
+Los programas están basado en clases y
+jerarquía de herencia. 
+La forma de que un objeto relice una
+determinada actividad es por mensajes.
+PROGRAMACIÓN
+ORIENTADA A OBJETOS
+
+=== Pagina 9 ===
+Que es un Objeto ?
+Los objetos son elementos primarios para
+construir otros programas.
+Todo es un objeto en la programación orientada
+objetos.
+Un objeto es la abstracción de una entidad del
+dominio del problema.
+CONCEPTOS BÁSICOS - MODELO DE
+ORIENTADO A OBJETOS.
+
+=== Pagina 10 ===
+Un objeto Tiene :
+Un comportamiento bien determinado. Que hace
+objeto y como lo hace ?
+Un estado interno o estructura interna.
+ El conjunto de variables de instancia.
+Una identidad
+ Como podemos distinguir de un objeto de otro ?
+CONCEPTOS BÁSICOS - MODELO DE
+ORIENTADO A OBJETOS.
+
+=== Pagina 11 ===
+Su comportamiento - Como lo hace ?
+La implementación indica como hace el objeto para
+responder sus mensajes.
+Se especifica a través de un conjunto de métodos.
+CONCEPTOS BÁSICOS - MODELO DE
+ORIENTADO A OBJETOS.

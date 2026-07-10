@@ -1,0 +1,153 @@
+=== Pagina 1 ===
+DELEGATES
+
+=== Pagina 2 ===
+QUE ES UN DELEGATE ?
+Un delegado es un tipo que representa referencias a métodos con una lista de
+parámetros particular y un tipo de retorno. Cuando crea una instancia de un delegado,
+puede asociar su instancia con cualquier método con una firma compatible y un tipo de
+valor devuelto. Puede invocar (o llamar) al método a través de la instancia delegada.Los
+delegados se utilizan para pasar métodos como argumentos a otros métodos. Los
+controladores de eventos no son más que métodos que se invocan a través de delegados.
+Usted crea un método personalizado y una clase como un control de Windows puede
+llamar a su método cuando ocurre un evento determinado.
+
+=== Pagina 3 ===
+Declaración inicial: es importante utilizar la palabra clave delegate
++ tipo de retorno del método + nombre del método.
+Declaración de la variable: esto nos va a servir para poder
+asignarle el método al cual vamos a llamar más adelante. 
+Básicamente es como haríamos una declaración de una variable
+común.
+Asignación de Método: le asignamos un método a nuestra variable
+recién creada, para luego invocar este método más adelante
+utilizando “miMetodo()”.
+Método: Todo bloque de código que se encuentre dentro de este
+método se va ejecutar cuando llamemos a nuestra variable
+mencionada anteriormente.
+COMO SE DECLARA UN DELEGATE?
+
+=== Pagina 4 ===
+Es importante validar si el método existe para evitar posibles
+errores de completamiento más adelante. Para eso lo podemos
+resolver de la siguiente forma:
+COMO SE DECLARA UN DELEGATE?
+O si bien podemos utilizar las expresiones Lambda para
+reducir líneas de código.
+
+=== Pagina 5 ===
+Declaración inicial: en este caso utilizamos la palabra clave
+delegate + tipo de retorno entero (int) + nombre del método.
+Declaración de la variable: lo llamamos suma, ya que es la
+operación que vamos a realizar más adelante.
+Asignación de Método: le asignamos un método Suma a nuestra
+variable recién creada Y luego utilizamos un “Debug.Log” para
+llamarlo y realizar diferentes cálculos.
+Método: Logica de calculo de suma.Es importante que el método
+reciba la misma cantidad y tipo de parámetros que nuestro
+delegate.
+COMO SE DECLARA UN DELEGATE?
+
+=== Pagina 6 ===
+QUE SON LOS UNITY EVENTS ?
+Los UnityEvents son maneras de permitir a los callbacks hechos por el usuario a ser persistidos
+desde un tiempo de edición a un tiempo de ejecución sin la necesidad de programación
+adicional y configuración de script.
+Los UnityEvents pueden ser agregados a cualquier MonoBehaviour y son ejecutados desde
+código como un .net delegado estándar. Cuando UnityEvent es agregado a un MonoBehaviour
+éste aparece en el Inspector y callbacks persistentes pueden ser agregados.
+UnityEvents tiene limitaciones similares a los delegados estándar. Es decir, contienen
+referencias al elemento que es el objetivo y esto evita que el objetivo sea recolectado como
+basura.
+
+=== Pagina 7 ===
+UNITY EVENTS : EJEMPLO
+Supongamos que en nuestro juego tenemos a un personaje que tiene que recolectar todas las
+monedas que se encuentran dentro del juego y las tiene que mostrar en pantalla.
+En este código el personaje toma como referencia el texto que se encuentra en pantalla y lo
+actualiza cada vez que colisiona contra una moneda.
+
+=== Pagina 8 ===
+UNITY EVENTS : EJEMPLO
+En este código el personaje toma
+como referencia el texto que se
+encuentra en pantalla y lo
+actualiza cada vez que colisiona
+contra una moneda.
+
+=== Pagina 9 ===
+UNITY EVENTS : EJEMPLO
+Primero creamos el script de la
+moneda, donde inicializamos un
+delegate llamado MonedaEvent y
+cada vez que colisiona contra el
+jugador es invocado.
+¿Qué quiere decir con esto? que
+todos los script que estén suscritos
+a Moneda Event van activar sus
+métodos asignados cuando el
+método MonedaEvent es invocado.
+
+=== Pagina 10 ===
+UNITY EVENTS : EJEMPLO
+Luego creamos un script para mostrar en
+pantalla en tiempo real.
+Como verán no es necesario tener una referencia
+previa para acceder al script de la Moneda.
+Para que nuestro Script se suscriba al evento de
+la moneda, es importante dos cosas : 
+1.Debemos tener la referencia previa del script
++ nombre de la variable después de un punto
+y utilizamos “+=” + el método que se va
+invocar cada vez que se active el evento.
+1.La suscripción se tiene que hacer dentro de
+la función OnEnable() esto nos permite evitar
+futuros errores más adelante.Y tenemos que
+suscribir con la función OnDisable() ya que si
+se pierde la referencia del evento y seguimos
+suscrito a él van a generar errores.
+
+=== Pagina 11 ===
+UNITY EVENTS : EJEMPLO
+Luego creamos un script para mostrar en
+pantalla en tiempo real.
+Como verán no es necesario tener una referencia
+previa para acceder al script de la Moneda.
+Para que nuestro Script se suscriba al evento de
+la moneda, es importante dos cosas : 
+1.Debemos tener la referencia previa del script
++ nombre de la variable después de un punto
+y utilizamos “+=” + el método que se va
+invocar cada vez que se active el evento.
+1.La suscripción se tiene que hacer dentro de
+la función OnEnable() esto nos permite evitar
+futuros errores más adelante.Y tenemos que
+suscribir con la función OnDisable() ya que si
+se pierde la referencia del evento y seguimos
+suscrito a él van a generar errores.
+
+=== Pagina 12 ===
+UNITY EVENTS : EJEMPLO
+Eliminamos el código sobrante dentro de nuestro jugador.
+Y listo! ya tenemos nuestro juego
+funcionando a la perfección.
+
+=== Pagina 13 ===
+TIP: Podemos utilizar Action para reducir líneas de código.
+Una acción es básicamente una interfaz para cualquier método que no tiene retorno ni parámetros de entrada,
+eso es todo.
+Por lo tanto, puede asignar a su variable de acción un método anónimo (como en la primera respuesta), cualquier
+otro método expuesto en sus scripts que cumpla con los requisitos de firma de los parámetros nulos/vacíos.
+UNITY EVENTS : EJEMPLO
+
+=== Pagina 14 ===
+UNITY EVENTS : EJEMPLO
+Es importante que el método
+al cual está suscrito pida un
+parámetro del mismo valor
+que envía el evento para ser
+invocado.
+UNITY EVENTS : EJEMPLO
+
+=== Pagina 15 ===
+CONCLUSIÓN
