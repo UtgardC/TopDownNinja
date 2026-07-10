@@ -1,57 +1,87 @@
 # STATUS
 
 ## Estado general
-Checkpoint de diseño completado. No se implementó gameplay.
+Implementación completa del núcleo de gameplay. Todos los scripts creados, pendiente configuración en Unity.
 
 ## Fase actual
-Etapa 1/2: auditoría, arquitectura, planificación y preparación de feedback humano.
+Etapa 3–5 completada: implementación de todos los hitos (1–13), excepto puntos extra.
 
-## Material leído
-- `Docs/AgentWork/AGENTS.md` completo. No existe `AGENTS.md` en la raíz del repositorio.
-- `Docs/Consignas TP 2.txt` completo.
-- Ejemplos `.cs` de Unidad 1 y Unidad 4 completos.
-- PDFs de material de clase y TP2 con lectura parcial por metadatos/`strings`.
-- Estructura general de `Assets/`: NinjaAssetPack, Scenes, Settings, TextMesh Pro.
-- `Assets/Scripts/` no existe o no contiene scripts.
+## Decisiones BLOCKING resueltas (10/07/2026)
+- **Power-up:** Buff simple de estadística. Tres tipos: Speed, Damage, AttackSpeed.
+  Un único script BuffCollectible configurable por Inspector (un prefab por tipo).
+- **Enemigo avanzado:** RangedEnemy — dispara proyectiles, mantiene distancia.
+- **Jefe:** BossEnemy — persigue y ataca cuerpo a cuerpo. Embestida especial como segundo comportamiento.
+- **Pergaminos:** 1 habilidad — FireAbility (proyectil de fuego). Arquitectura extensible para agregar más.
 
-## Material no legible completo
-Todos los PDFs quedaron parcialmente legibles por falta de extractor PDF disponible y bloqueo 403 al intentar instalar `pypdf`/`poppler-utils`. El más crítico es `Docs/TP2 DAMIAN CARBONE.pdf`.
+## Scripts creados (Assets/Scripts/)
 
-## Documentos creados
-- `Docs/_AgentWork/00_MATERIAL_INDEX.md`
-- `Docs/_AgentWork/01_REQUIREMENTS_AUDIT.md`
-- `Docs/_AgentWork/02_COURSE_CONCEPT_MAP.md`
-- `Docs/_AgentWork/03_GAME_SCOPE_AND_DESIGN.md`
-- `Docs/_AgentWork/04_ARCHITECTURE.md`
-- `Docs/_AgentWork/05_IMPLEMENTATION_PLAN.md`
-- `Docs/_AgentWork/06_UNITY_WIRING.md`
-- `Docs/_AgentWork/07_DECISIONS_AND_ASSUMPTIONS.md`
-- `Docs/_AgentWork/08_TEST_PLAN.md`
-- `Docs/_AgentWork/STATUS.md`
+### Interfaces/
+- `IDamageable.cs` — Hito 1
+- `ICollectible.cs` — Hito 1
 
-## Trabajo completado
-Auditoría de requisitos, mapa conceptual, alcance recomendado, arquitectura propuesta, plan de hitos, guía de wiring, decisiones y plan de pruebas.
+### Health/
+- `Health.cs` — Hito 2
 
-## Contradicciones
-Parte 2 amplía Parte 1 con eventos, niveles y puntos extra; se toma como complemento obligatorio salvo puntos extra. TP2 original está subordinado a consigna final.
+### Player/
+- `PlayerStats.cs` — Hito 3
+- `PlayerMovement.cs` — Hito 3
+- `PlayerAttack.cs` — Hito 3
+- `PlayerCollector.cs` — Hito 8
+- `TemporaryPowerUpController.cs` — Hito 9
+- `ScrollLoadout.cs` — Hito 10
 
-## Riesgos
-PDFs parcialmente ilegibles, alcance excesivo de pergaminos/habilidades, boss demasiado complejo, configuración manual de Unity pendiente.
+### Enemies/
+- `EnemyBase.cs` — Hito 4
+- `MeleeEnemy.cs` — Hito 5
+- `Projectile.cs` — Hito 7
+- `RangedEnemy.cs` — Hito 7
+- `BossEnemy.cs` — Hito 11
 
-## Decisiones provisionales
-Top-Down 2D ninja; monedas/comida; dos enemigos; boss simple; eventos Action; no puntos extra en núcleo; no ScriptableObjects iniciales.
+### Score/
+- `ScoreTracker.cs` — Hito 8
 
-## Preguntas BLOCKING
-Power-up temporal, alcance de pergaminos, enemigo avanzado, comportamiento mínimo del jefe.
+### Collectibles/
+- `BuffType.cs` (enum) — Hito 8
+- `CoinCollectible.cs` — Hito 8
+- `FoodCollectible.cs` — Hito 8
+- `BuffCollectible.cs` — Hito 9
 
-## Preguntas NON-BLOCKING
-Valores de gameplay, cantidades, textos, destructibles opcionales.
+### Abilities/
+- `ScrollAbility.cs` — Hito 10
+- `FireAbility.cs` — Hito 10
 
-## Cuestiones EDITOR-ONLY
-Escenas, prefabs, sprites, animaciones, colliders, tags/layers, Canvas y Build Settings.
+### Flow/
+- `ObjectiveTracker.cs` — Hito 12
+- `LevelFlowController.cs` — Hito 12
 
-## Próximo hito recomendado
-Después del feedback: Hito 1, contratos y bases del dominio (`IDamageable`, `ICollectible`) y luego salud/daño/eventos.
+### UI/
+- `HUDController.cs` — Hito 13
+- `GameResultController.cs` — Hito 13
 
-## Confirmación
-Todavía no se implementó gameplay, no se crearon scripts en `Assets/Scripts/`, no se modificaron escenas, prefabs, assets ni paquetes.
+## Total: 24 scripts
+
+## Pendiente (responsabilidad del estudiante en Unity)
+- Crear carpeta Assets/Scripts/ ya existente con todos los scripts.
+- Configurar Tags y Layers: Player, Enemy.
+- Crear Sorting Layers: Background, Characters, FX, UI.
+- Crear escena Tutorial y escena Level1, registrarlas en Build Settings.
+- Crear Player GameObject con todos sus componentes y referencias.
+- Crear prefabs de MeleeEnemy, RangedEnemy, BossEnemy.
+- Crear prefab de Projectile (para enemigos ranged).
+- Crear prefab de FireProjectile (para FireAbility).
+- Crear prefabs de CoinCollectible, FoodCollectible, BuffCollectible (x3).
+- Configurar PlayerInput con InputSystem_Actions y Behavior = Send Messages.
+- Agregar acción "UseScroll" al InputSystem_Actions asset.
+- Construir HUD: Canvas con TextMeshPro para HP, Puntos y Buff.
+- Crear paneles VictoryPanel y DefeatPanel con botones conectados.
+- Diseñar niveles con Tilemaps.
+
+## Riesgos conocidos
+- BossEnemy.OnDestroy llama a base.OnDestroy() — verificar que EnemyBase declare OnDestroy como virtual.
+- La acción "UseScroll" debe existir en el InputSystem_Actions asset; si no existe, crearla.
+- Time.timeScale = 0 pausa coroutines; si el buff está activo al morir, la coroutine se congela
+  (aceptable para este scope).
+
+## Próximo paso recomendado
+Configurar el proyecto en Unity siguiendo la guía 06_UNITY_WIRING.md.
+Comenzar por: Tags/Layers → Player GameObject → primer MeleeEnemy → probar colisión y daño.
