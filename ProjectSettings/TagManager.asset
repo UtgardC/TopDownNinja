@@ -11,13 +11,13 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Obstacle
   - 
   - Player
   - Enemy
-  - 
-  - 
-  - 
+  - PlayerProjectile
+  - EnemyProjectile
+  - Collectible
   - 
   - 
   - 
@@ -41,11 +41,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Background
+  - name: Ground
     uniqueID: 4118450015
+    locked: 0
+  - name: World
+    uniqueID: 3563200723
     locked: 0
   - name: Characters
     uniqueID: 605759331
+    locked: 0
+  - name: Foreground
+    uniqueID: 4029696451
     locked: 0
   - name: FX
     uniqueID: 3613265595
