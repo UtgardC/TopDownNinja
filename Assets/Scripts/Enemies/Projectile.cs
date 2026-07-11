@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 // Hito 7 — Segundo enemigo (ranged)
 
@@ -15,10 +16,10 @@ Componentes necesarios:
 
 Referencias del Inspector:
 - speed: velocidad de desplazamiento del proyectil.
-- playerLayer: capa del jugador (para detectar impacto).
+- targetLayers: capas que este proyectil puede dañar.
 
 Layers y Tags:
-- El jugador debe tener Layer "Player"; asignarla en el campo playerLayer.
+- En proyectiles enemigos usar Player; en proyectiles del jugador usar Enemy.
 
 Notas:
 - Launch(direction, damage) es llamado por RangedEnemy al disparar.
@@ -28,7 +29,8 @@ Notas:
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float speed = 6f;
-    [SerializeField] private LayerMask playerLayer;
+    [FormerlySerializedAs("playerLayer")]
+    [SerializeField] private LayerMask targetLayers;
     [SerializeField] private float lifetime = 4f;
 
     private int damage;
@@ -42,12 +44,24 @@ public class Projectile : MonoBehaviour
     // Configura el daño del proyectil antes de lanzarlo.
     public void SetDamage(int amount)
     {
-        damage = amount;
+        damage = Mathf.Max(0, amount);
+    }
+
+    public void SetTargetLayers(LayerMask layers)
+    {
+        targetLayers = layers;
     }
 
     // Lanza el proyectil en la dirección indicada y lo destruye después de su tiempo de vida.
     public void Launch(Vector2 direction)
     {
+        if (rb == null)
+        {
+            Debug.LogError("Projectile necesita un Rigidbody2D.", this);
+            Destroy(gameObject);
+            return;
+        }
+
         rb.linearVelocity = direction.normalized * speed;
         Destroy(gameObject, lifetime);
     }
@@ -55,9 +69,9 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Verifica si el objeto pertenece a la capa del jugador.
-        if ((playerLayer.value & (1 << other.gameObject.layer)) == 0) return;
+        if ((targetLayers.value & (1 << other.gameObject.layer)) == 0) return;
 
-        IDamageable target = other.GetComponent<IDamageable>();
+        IDamageable target = other.GetComponentInParent<IDamageable>();
         if (target != null && target.IsAlive())
         {
             target.TakeDamage(damage);

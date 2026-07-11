@@ -27,19 +27,31 @@ Notas:
 public class FireAbility : ScrollAbility
 {
     [SerializeField] private GameObject fireProjectilePrefab;
+    [SerializeField] private LayerMask targetLayers;
+    [SerializeField] private float spawnOffset = 0.6f;
+
+    public override ScrollType AbilityType => ScrollType.Fire;
 
     // Lanza un proyectil de fuego en la dirección indicada.
-    protected override void Execute(Vector2 direction)
+    protected override bool Execute(Vector2 direction)
     {
-        if (fireProjectilePrefab == null) return;
+        if (fireProjectilePrefab == null) return false;
 
-        GameObject projectileGO = Instantiate(fireProjectilePrefab, transform.position, Quaternion.identity);
+        Vector2 normalizedDirection = direction.sqrMagnitude > 0.001f ? direction.normalized : Vector2.down;
+        Vector2 spawnPosition = (Vector2)transform.position + normalizedDirection * spawnOffset;
+        GameObject projectileGO = Instantiate(fireProjectilePrefab, spawnPosition, Quaternion.identity);
         Projectile projectile = projectileGO.GetComponent<Projectile>();
 
-        if (projectile != null)
+        if (projectile == null)
         {
-            projectile.SetDamage(damage);
-            projectile.Launch(direction);
+            Destroy(projectileGO);
+            Debug.LogError("El prefab de fuego necesita un componente Projectile.", fireProjectilePrefab);
+            return false;
         }
+
+        projectile.SetDamage(damage);
+        projectile.SetTargetLayers(targetLayers);
+        projectile.Launch(normalizedDirection);
+        return true;
     }
 }

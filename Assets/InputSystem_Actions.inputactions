@@ -321,7 +321,7 @@
                 {
                     "name": "",
                     "id": "b3c1c7f0-bd20-4ee7-a0f1-899b24bca6d7",
-                    "path": "<Keyboard>/enter",
+                    "path": "<Keyboard>/j",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -486,7 +486,7 @@
                 {
                     "name": "",
                     "id": "444dc5e4-1298-4e58-a4bc-311e85663560",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/k",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

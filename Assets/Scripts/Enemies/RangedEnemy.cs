@@ -81,7 +81,7 @@ public class RangedEnemy : EnemyBase
         if (target == null) return;
 
         Vector2 direction = ((Vector2)transform.position - (Vector2)target.position).normalized;
-        rb.linearVelocity = direction * moveSpeed;
+        SetVelocity(direction * moveSpeed);
     }
 
     // Intenta disparar un proyectil si el cooldown lo permite. Devuelve verdadero si disparó.
@@ -106,6 +106,7 @@ public class RangedEnemy : EnemyBase
         {
             projectile.SetDamage(attackDamage);
             projectile.Launch(direction);
+            NotifyAttackPerformed();
         }
     }
 

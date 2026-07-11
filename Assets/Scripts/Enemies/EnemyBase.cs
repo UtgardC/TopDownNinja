@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 // Hito 4 — Base de enemigos
@@ -32,11 +33,16 @@ public abstract class EnemyBase : MonoBehaviour
     [SerializeField] protected Health health;
     [SerializeField] protected float moveSpeed = 2f;
     [SerializeField] protected Transform target;
+    [SerializeField] private float deathDisableDelay = 0.75f;
 
     protected Rigidbody2D rb;
 
     // Notifica cuando el enemigo muere.
     public event Action OnEnemyDied;
+    public event Action OnAttackPerformed;
+    public event Action OnSpecialPerformed;
+
+    public Vector2 Velocity => rb != null ? rb.linearVelocity : Vector2.zero;
 
     protected virtual void Awake()
     {
@@ -73,20 +79,51 @@ public abstract class EnemyBase : MonoBehaviour
         if (target == null) return;
 
         Vector2 direction = ((Vector2)target.position - (Vector2)transform.position).normalized;
-        rb.linearVelocity = direction * moveSpeed;
+        SetVelocity(direction * moveSpeed);
     }
 
     // Detiene el movimiento del enemigo.
     protected void StopMovement()
     {
-        rb.linearVelocity = Vector2.zero;
+        SetVelocity(Vector2.zero);
+    }
+
+    protected void SetVelocity(Vector2 velocity)
+    {
+        if (rb != null) rb.linearVelocity = velocity;
+    }
+
+    protected void NotifyAttackPerformed()
+    {
+        OnAttackPerformed?.Invoke();
+    }
+
+    protected void NotifySpecialPerformed()
+    {
+        OnSpecialPerformed?.Invoke();
     }
 
     // Maneja la muerte del enemigo: detiene el movimiento, lanza el evento y desactiva el objeto.
     private void HandleDeath()
     {
         StopMovement();
+
+        foreach (Collider2D enemyCollider in GetComponentsInChildren<Collider2D>())
+        {
+            enemyCollider.enabled = false;
+        }
+
         OnEnemyDied?.Invoke();
+        StartCoroutine(DisableAfterDeath());
+    }
+
+    private IEnumerator DisableAfterDeath()
+    {
+        if (deathDisableDelay > 0f)
+        {
+            yield return new WaitForSeconds(deathDisableDelay);
+        }
+
         gameObject.SetActive(false);
     }
 

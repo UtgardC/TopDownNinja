@@ -19,6 +19,8 @@ public abstract class ScrollAbility : MonoBehaviour
 
     private float cooldownTimer = 0f;
 
+    public abstract ScrollType AbilityType { get; }
+
     protected virtual void Update()
     {
         if (cooldownTimer > 0f)
@@ -32,7 +34,8 @@ public abstract class ScrollAbility : MonoBehaviour
     {
         if (!CanUse()) return false;
 
-        Execute(direction);
+        if (!Execute(direction)) return false;
+
         cooldownTimer = cooldown;
         return true;
     }
@@ -44,7 +47,7 @@ public abstract class ScrollAbility : MonoBehaviour
     }
 
     // Cada habilidad concreta define su efecto aquí.
-    protected abstract void Execute(Vector2 direction);
+    protected abstract bool Execute(Vector2 direction);
 
     // Devuelve el tiempo restante de cooldown. Útil para mostrar en HUD.
     public float GetCooldownRemaining()

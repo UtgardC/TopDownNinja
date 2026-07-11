@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -37,6 +38,8 @@ public class HUDController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI healthText;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI buffText;
+
+    private readonly Dictionary<BuffType, float> activeBuffs = new Dictionary<BuffType, float>();
 
     private void OnEnable()
     {
@@ -98,17 +101,35 @@ public class HUDController : MonoBehaviour
     // Muestra el texto del buff activo con su duración.
     private void ShowBuffDisplay(BuffType type, float duration)
     {
-        if (buffText == null) return;
-
-        buffText.gameObject.SetActive(true);
-        buffText.text = "BUFF: " + GetBuffName(type) + " (" + duration + "s)";
+        activeBuffs[type] = duration;
+        RefreshBuffDisplay();
     }
 
     // Oculta el texto del buff cuando termina.
     private void HideBuffDisplay(BuffType type)
     {
-        if (buffText != null)
+        activeBuffs.Remove(type);
+        RefreshBuffDisplay();
+    }
+
+    private void RefreshBuffDisplay()
+    {
+        if (buffText == null) return;
+
+        if (activeBuffs.Count == 0)
+        {
             buffText.gameObject.SetActive(false);
+            return;
+        }
+
+        List<string> labels = new List<string>();
+        foreach (KeyValuePair<BuffType, float> buff in activeBuffs)
+        {
+            labels.Add(GetBuffName(buff.Key) + " (" + buff.Value + "s)");
+        }
+
+        buffText.gameObject.SetActive(true);
+        buffText.text = "BUFF: " + string.Join(" / ", labels);
     }
 
     // Devuelve el nombre en español del buff para mostrarlo en el HUD.

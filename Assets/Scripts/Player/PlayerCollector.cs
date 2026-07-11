@@ -34,6 +34,7 @@ public class PlayerCollector : MonoBehaviour
     [SerializeField] private Health health;
     [SerializeField] private ScoreTracker scoreTracker;
     [SerializeField] private TemporaryPowerUpController powerUpController;
+    [SerializeField] private ScrollLoadout scrollLoadout;
 
     // Notifica cuando se recoge un coleccionable.
     public event Action<ICollectible> OnCollected;
@@ -41,10 +42,11 @@ public class PlayerCollector : MonoBehaviour
     public Health Health => health;
     public ScoreTracker ScoreTracker => scoreTracker;
     public TemporaryPowerUpController PowerUpController => powerUpController;
+    public ScrollLoadout ScrollLoadout => scrollLoadout;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        ICollectible collectible = other.GetComponent<ICollectible>();
+        ICollectible collectible = other.GetComponentInParent<ICollectible>();
         if (collectible != null)
         {
             collectible.Collect(this);

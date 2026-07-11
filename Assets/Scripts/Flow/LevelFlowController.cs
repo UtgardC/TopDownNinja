@@ -34,18 +34,35 @@ public class LevelFlowController : MonoBehaviour
     // Carga el nivel principal del juego.
     public void LoadMainLevel()
     {
-        SceneManager.LoadScene(mainLevelSceneName);
+        LoadScene(mainLevelSceneName);
     }
 
     // Carga la escena del tutorial.
     public void LoadTutorial()
     {
-        SceneManager.LoadScene(tutorialSceneName);
+        LoadScene(tutorialSceneName);
     }
 
     // Recarga la escena actual. Útil para reiniciar tras una derrota.
     public void ReloadCurrentScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void LoadScene(string sceneName)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            Debug.LogError("El nombre de la escena no está configurado.", this);
+            return;
+        }
+
+        if (!Application.CanStreamedLevelBeLoaded(sceneName))
+        {
+            Debug.LogError("La escena '" + sceneName + "' no está registrada en Build Settings.", this);
+            return;
+        }
+
+        SceneManager.LoadScene(sceneName);
     }
 }

@@ -33,6 +33,10 @@ public class Health : MonoBehaviour, IDamageable
     // Notifica cuando la vida cambia: envía salud actual y máxima.
     public event Action<int, int> OnHealthChanged;
 
+    // Notifican la cantidad real aplicada. Son útiles para animación, audio y feedback.
+    public event Action<int> OnDamaged;
+    public event Action<int> OnHealed;
+
     // Notifica cuando la vida llega a cero.
     public event Action OnDied;
 
@@ -48,12 +52,15 @@ public class Health : MonoBehaviour, IDamageable
     public void TakeDamage(int amount)
     {
         if (!IsAlive()) return;
-        if (amount < 0) amount = 0;
+        if (amount <= 0) return;
 
+        int previousHealth = currentHealth;
         currentHealth -= amount;
         if (currentHealth < 0) currentHealth = 0;
 
+        int appliedDamage = previousHealth - currentHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        OnDamaged?.Invoke(appliedDamage);
 
         if (currentHealth == 0)
         {
@@ -65,12 +72,17 @@ public class Health : MonoBehaviour, IDamageable
     public void Heal(int amount)
     {
         if (!IsAlive()) return;
-        if (amount < 0) amount = 0;
+        if (amount <= 0) return;
 
+        int previousHealth = currentHealth;
         currentHealth += amount;
         if (currentHealth > maxHealth) currentHealth = maxHealth;
 
+        int appliedHealing = currentHealth - previousHealth;
+        if (appliedHealing == 0) return;
+
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        OnHealed?.Invoke(appliedHealing);
     }
 
     // Devuelve verdadero si la vida es mayor que cero.

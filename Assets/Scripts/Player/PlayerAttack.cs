@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -38,10 +39,13 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private PlayerStats stats;
     [SerializeField] private PlayerMovement movement;
     [SerializeField] private Transform attackOrigin;
+    [SerializeField] private float attackOffset = 0.6f;
     [SerializeField] private float attackRange = 0.8f;
     [SerializeField] private LayerMask enemyLayer;
 
     private float attackCooldownTimer = 0f;
+
+    public event Action OnAttackPerformed;
 
     private void Update()
     {
@@ -64,12 +68,13 @@ public class PlayerAttack : MonoBehaviour
     // Intenta ejecutar un ataque. Devuelve verdadero si el ataque se realizó.
     public bool TryAttack()
     {
-        if (attackCooldownTimer > 0f) return false;
+        if (attackCooldownTimer > 0f || stats == null) return false;
 
         int damage = CalculateDamage();
         ApplyAttackInArea(damage);
 
         attackCooldownTimer = stats.AttackCooldown;
+        OnAttackPerformed?.Invoke();
         return true;
     }
 
@@ -82,12 +87,15 @@ public class PlayerAttack : MonoBehaviour
     // Aplica daño a todos los IDamageable dentro del radio de ataque.
     private void ApplyAttackInArea(int damage)
     {
-        Vector2 origin = attackOrigin != null ? (Vector2)attackOrigin.position : (Vector2)transform.position;
+        Vector2 direction = movement != null ? movement.GetFacingDirection() : Vector2.down;
+        Vector2 origin = (Vector2)transform.position + direction.normalized * attackOffset;
+        if (attackOrigin != null) attackOrigin.position = origin;
+
         Collider2D[] hits = Physics2D.OverlapCircleAll(origin, attackRange, enemyLayer);
 
         foreach (Collider2D hit in hits)
         {
-            IDamageable target = hit.GetComponent<IDamageable>();
+            IDamageable target = hit.GetComponentInParent<IDamageable>();
             if (target != null && target.IsAlive())
             {
                 target.TakeDamage(damage);
@@ -98,8 +106,10 @@ public class PlayerAttack : MonoBehaviour
     // Dibuja el rango de ataque en el Editor para facilitar su configuración.
     private void OnDrawGizmosSelected()
     {
-        if (attackOrigin == null) return;
+        Vector2 origin = attackOrigin != null
+            ? (Vector2)attackOrigin.position
+            : (Vector2)transform.position + Vector2.down * attackOffset;
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackOrigin.position, attackRange);
+        Gizmos.DrawWireSphere(origin, attackRange);
     }
 }

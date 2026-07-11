@@ -34,12 +34,14 @@ Notas:
 public class ScrollLoadout : MonoBehaviour
 {
     [SerializeField] private ScrollAbility equippedAbility;
+    [SerializeField] private ScrollAbility[] availableAbilities;
     [SerializeField] private PlayerMovement movement;
 
     // Notifica cuando cambia el pergamino equipado.
     public event Action<ScrollAbility> OnScrollChanged;
 
     public ScrollAbility EquippedAbility => equippedAbility;
+    public bool HasEquippedAbility => equippedAbility != null;
 
     // Recibe el input del pergamino desde el sistema de input (PlayerInput → Send Messages).
     private void OnUseScroll(InputValue value)
@@ -63,7 +65,28 @@ public class ScrollLoadout : MonoBehaviour
     // Equipa una nueva habilidad. Notifica el cambio.
     public void EquipAbility(ScrollAbility newAbility)
     {
+        if (newAbility == null) return;
+
         equippedAbility = newAbility;
         OnScrollChanged?.Invoke(equippedAbility);
+    }
+
+    // Busca y equipa una habilidad del tipo indicado entre los componentes
+    // configurados en availableAbilities. Devuelve false si falta el componente.
+    public bool EquipAbility(ScrollType type)
+    {
+        if (availableAbilities == null) return false;
+
+        foreach (ScrollAbility ability in availableAbilities)
+        {
+            if (ability != null && ability.AbilityType == type)
+            {
+                EquipAbility(ability);
+                return true;
+            }
+        }
+
+        Debug.LogWarning("No hay una habilidad configurada para el pergamino " + type + ".", this);
+        return false;
     }
 }

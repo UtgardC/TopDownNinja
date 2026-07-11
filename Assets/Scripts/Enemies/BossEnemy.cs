@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // Hito 11 — Jefe final
@@ -46,11 +47,14 @@ public class BossEnemy : EnemyBase
     [SerializeField] private float chargeSpeed = 8f;
     [SerializeField] private float chargeCooldown = 5f;
     [SerializeField] private float chargeDistance = 4f;
+    [SerializeField] private int chargeDamage = 30;
+    [SerializeField] private float chargeHitRadius = 1f;
     [SerializeField] private LayerMask playerLayer;
 
     private float attackCooldownTimer = 0f;
     private float chargeCooldownTimer = 0f;
     private bool isCharging = false;
+    private readonly HashSet<IDamageable> chargeTargetsHit = new HashSet<IDamageable>();
 
     // Notifica cuando el jefe es derrotado. Escuchado por ObjectiveTracker.
     public event Action OnBossDefeated;
@@ -76,7 +80,11 @@ public class BossEnemy : EnemyBase
     // IA: si está cerca, ataca cuerpo a cuerpo; si está lejos y puede, embiste.
     protected override void TickBehavior()
     {
-        if (isCharging) return;
+        if (isCharging)
+        {
+            ApplyChargeDamage();
+            return;
+        }
 
         float distance = GetDistanceToTarget();
 
@@ -103,7 +111,7 @@ public class BossEnemy : EnemyBase
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, attackRange, playerLayer);
         foreach (Collider2D hit in hits)
         {
-            IDamageable damageable = hit.GetComponent<IDamageable>();
+            IDamageable damageable = hit.GetComponentInParent<IDamageable>();
             if (damageable != null && damageable.IsAlive())
             {
                 damageable.TakeDamage(attackDamage);
@@ -111,6 +119,7 @@ public class BossEnemy : EnemyBase
         }
 
         attackCooldownTimer = attackCooldown;
+        NotifyAttackPerformed();
         return true;
     }
 
@@ -120,8 +129,10 @@ public class BossEnemy : EnemyBase
         if (target == null) return;
 
         isCharging = true;
+        chargeTargetsHit.Clear();
         Vector2 direction = ((Vector2)target.position - (Vector2)transform.position).normalized;
-        rb.linearVelocity = direction * chargeSpeed;
+        SetVelocity(direction * chargeSpeed);
+        NotifySpecialPerformed();
 
         // La embestida dura medio segundo y luego el jefe vuelve al comportamiento normal.
         Invoke(nameof(EndCharge), 0.5f);
@@ -132,6 +143,19 @@ public class BossEnemy : EnemyBase
     {
         isCharging = false;
         StopMovement();
+    }
+
+    private void ApplyChargeDamage()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, chargeHitRadius, playerLayer);
+        foreach (Collider2D hit in hits)
+        {
+            IDamageable damageable = hit.GetComponentInParent<IDamageable>();
+            if (damageable != null && damageable.IsAlive() && chargeTargetsHit.Add(damageable))
+            {
+                damageable.TakeDamage(chargeDamage);
+            }
+        }
     }
 
     private void NotifyBossDefeated()
@@ -145,6 +169,8 @@ public class BossEnemy : EnemyBase
         Gizmos.DrawWireSphere(transform.position, attackRange);
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, chargeDistance);
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position, chargeHitRadius);
     }
 
     protected override void OnDestroy()

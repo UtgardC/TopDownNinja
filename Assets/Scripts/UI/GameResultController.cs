@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 // Hito 13 — Victoria, derrota y HUD
@@ -35,6 +36,15 @@ public class GameResultController : MonoBehaviour
 
     [SerializeField] private GameObject victoryPanel;
     [SerializeField] private GameObject defeatPanel;
+    [SerializeField] private float resultDelay = 0.75f;
+
+    private bool resultTriggered;
+
+    private void Awake()
+    {
+        // Evita que una escena nueva quede congelada si la anterior terminó pausada.
+        Time.timeScale = 1f;
+    }
 
     private void OnEnable()
     {
@@ -64,14 +74,25 @@ public class GameResultController : MonoBehaviour
     // Muestra la pantalla de victoria y pausa el juego.
     private void HandleVictory()
     {
-        if (victoryPanel != null) victoryPanel.SetActive(true);
-        Time.timeScale = 0f;
+        if (!resultTriggered) StartCoroutine(ShowResult(victoryPanel));
     }
 
     // Muestra la pantalla de derrota y pausa el juego.
     private void HandleDefeat()
     {
-        if (defeatPanel != null) defeatPanel.SetActive(true);
+        if (!resultTriggered) StartCoroutine(ShowResult(defeatPanel));
+    }
+
+    private IEnumerator ShowResult(GameObject panel)
+    {
+        resultTriggered = true;
+
+        if (resultDelay > 0f)
+        {
+            yield return new WaitForSecondsRealtime(resultDelay);
+        }
+
+        if (panel != null) panel.SetActive(true);
         Time.timeScale = 0f;
     }
 
@@ -85,13 +106,13 @@ public class GameResultController : MonoBehaviour
     public void OnClickRestart()
     {
         ResumeTime();
-        levelFlow.ReloadCurrentScene();
+        if (levelFlow != null) levelFlow.ReloadCurrentScene();
     }
 
     // Vuelve al tutorial. Conectar al botón "Menú" del panel de derrota o victoria.
     public void OnClickMenu()
     {
         ResumeTime();
-        levelFlow.LoadTutorial();
+        if (levelFlow != null) levelFlow.LoadTutorial();
     }
 }

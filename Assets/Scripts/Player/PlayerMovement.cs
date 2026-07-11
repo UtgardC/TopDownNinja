@@ -34,6 +34,12 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
+    private Vector2 facingDirection = Vector2.down;
+
+    public Vector2 MoveInput => moveInput;
+    public Vector2 FacingDirection => facingDirection;
+    public bool IsMoving => moveInput.sqrMagnitude > 0.001f;
+    public Vector2 Velocity => rb != null ? rb.linearVelocity : Vector2.zero;
 
     private void Awake()
     {
@@ -44,6 +50,10 @@ public class PlayerMovement : MonoBehaviour
     private void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
+        if (moveInput.sqrMagnitude > 0.001f)
+        {
+            facingDirection = moveInput.normalized;
+        }
     }
 
     private void FixedUpdate()
@@ -54,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
     // Aplica el movimiento al Rigidbody2D usando la velocidad de las estadísticas.
     private void Move(Vector2 direction)
     {
+        if (rb == null || stats == null) return;
         rb.linearVelocity = direction.normalized * stats.MoveSpeed;
     }
 
@@ -61,9 +72,12 @@ public class PlayerMovement : MonoBehaviour
     // Devuelve Vector2.down si el jugador está quieto (orientación por defecto).
     public Vector2 GetFacingDirection()
     {
-        if (moveInput != Vector2.zero)
-            return moveInput.normalized;
+        return facingDirection;
+    }
 
-        return Vector2.down;
+    private void OnDisable()
+    {
+        moveInput = Vector2.zero;
+        if (rb != null) rb.linearVelocity = Vector2.zero;
     }
 }

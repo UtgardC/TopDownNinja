@@ -55,7 +55,8 @@ public class TemporaryPowerUpController : MonoBehaviour
                 speedCoroutine = StartCoroutine(RunBuff(
                     type, duration,
                     () => stats.ApplySpeedMultiplier(multiplier),
-                    () => stats.ResetSpeedMultiplier()
+                    () => stats.ResetSpeedMultiplier(),
+                    () => speedCoroutine = null
                 ));
                 break;
 
@@ -64,7 +65,8 @@ public class TemporaryPowerUpController : MonoBehaviour
                 damageCoroutine = StartCoroutine(RunBuff(
                     type, duration,
                     () => stats.ApplyDamageMultiplier(multiplier),
-                    () => stats.ResetDamageMultiplier()
+                    () => stats.ResetDamageMultiplier(),
+                    () => damageCoroutine = null
                 ));
                 break;
 
@@ -73,21 +75,23 @@ public class TemporaryPowerUpController : MonoBehaviour
                 attackSpeedCoroutine = StartCoroutine(RunBuff(
                     type, duration,
                     () => stats.ApplyAttackSpeedMultiplier(multiplier),
-                    () => stats.ResetAttackSpeedMultiplier()
+                    () => stats.ResetAttackSpeedMultiplier(),
+                    () => attackSpeedCoroutine = null
                 ));
                 break;
         }
     }
 
     // Aplica el buff, espera la duración y luego lo revierte.
-    private IEnumerator RunBuff(BuffType type, float duration, Action apply, Action remove)
+    private IEnumerator RunBuff(BuffType type, float duration, Action apply, Action remove, Action clearReference)
     {
         apply();
         OnBuffStarted?.Invoke(type, duration);
 
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSeconds(Mathf.Max(0f, duration));
 
         remove();
+        clearReference();
         OnBuffEnded?.Invoke(type);
     }
 
