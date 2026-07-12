@@ -90,4 +90,12 @@ public class Health : MonoBehaviour, IDamageable
     {
         return currentHealth > 0;
     }
+
+    // Restaura toda la vida incluso si el objeto había muerto.
+    // Se usa, por ejemplo, en el dummy reutilizable del tutorial.
+    public void RestoreToFull()
+    {
+        currentHealth = maxHealth;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
 }

@@ -33,6 +33,7 @@ public abstract class EnemyBase : MonoBehaviour
     [SerializeField] protected Health health;
     [SerializeField] protected float moveSpeed = 2f;
     [SerializeField] protected Transform target;
+    [SerializeField] protected float detectionRange = 10f;
     [SerializeField] private float deathDisableDelay = 0.75f;
 
     protected Rigidbody2D rb;
@@ -47,10 +48,13 @@ public abstract class EnemyBase : MonoBehaviour
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        if (health == null) health = GetComponent<Health>();
     }
 
     protected virtual void Start()
     {
+        TryFindPlayerTarget();
+
         if (health != null)
         {
             health.OnDied += HandleDeath;
@@ -86,6 +90,11 @@ public abstract class EnemyBase : MonoBehaviour
     protected void StopMovement()
     {
         SetVelocity(Vector2.zero);
+    }
+
+    protected bool IsTargetDetected()
+    {
+        return target != null && GetDistanceToTarget() <= detectionRange;
     }
 
     protected void SetVelocity(Vector2 velocity)
@@ -131,6 +140,14 @@ public abstract class EnemyBase : MonoBehaviour
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
+    }
+
+    private void TryFindPlayerTarget()
+    {
+        if (target != null) return;
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null) target = player.transform;
     }
 
     protected virtual void OnDestroy()

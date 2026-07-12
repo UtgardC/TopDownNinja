@@ -43,6 +43,13 @@ public class ScrollLoadout : MonoBehaviour
     public ScrollAbility EquippedAbility => equippedAbility;
     public bool HasEquippedAbility => equippedAbility != null;
 
+    private void Awake()
+    {
+        if (movement == null) movement = GetComponent<PlayerMovement>();
+        if (availableAbilities == null || availableAbilities.Length == 0)
+            availableAbilities = GetComponents<ScrollAbility>();
+    }
+
     // Recibe el input del pergamino desde el sistema de input (PlayerInput → Send Messages).
     private void OnUseScroll(InputValue value)
     {

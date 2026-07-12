@@ -44,6 +44,14 @@ public class PlayerCollector : MonoBehaviour
     public TemporaryPowerUpController PowerUpController => powerUpController;
     public ScrollLoadout ScrollLoadout => scrollLoadout;
 
+    private void Awake()
+    {
+        if (health == null) health = GetComponent<Health>();
+        if (scoreTracker == null) scoreTracker = GetComponent<ScoreTracker>();
+        if (powerUpController == null) powerUpController = GetComponent<TemporaryPowerUpController>();
+        if (scrollLoadout == null) scrollLoadout = GetComponent<ScrollLoadout>();
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         ICollectible collectible = other.GetComponentInParent<ICollectible>();

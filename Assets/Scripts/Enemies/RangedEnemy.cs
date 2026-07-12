@@ -57,6 +57,12 @@ public class RangedEnemy : EnemyBase
     {
         float distance = GetDistanceToTarget();
 
+        if (!IsTargetDetected())
+        {
+            StopMovement();
+            return;
+        }
+
         if (distance > shootRange)
         {
             // Fuera de rango: se acerca al jugador.

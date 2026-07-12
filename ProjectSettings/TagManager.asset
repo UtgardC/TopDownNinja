@@ -53,6 +53,9 @@ TagManager:
   - name: Foreground
     uniqueID: 4029696451
     locked: 0
+  - name: COLISIONS
+    uniqueID: 2407193667
+    locked: 0
   - name: FX
     uniqueID: 3613265595
     locked: 0

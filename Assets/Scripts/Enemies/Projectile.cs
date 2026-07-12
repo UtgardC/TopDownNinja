@@ -31,6 +31,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float speed = 6f;
     [FormerlySerializedAs("playerLayer")]
     [SerializeField] private LayerMask targetLayers;
+    [SerializeField] private LayerMask blockingLayers;
     [SerializeField] private float lifetime = 4f;
 
     private int damage;
@@ -52,6 +53,11 @@ public class Projectile : MonoBehaviour
         targetLayers = layers;
     }
 
+    public void SetBlockingLayers(LayerMask layers)
+    {
+        blockingLayers = layers;
+    }
+
     // Lanza el proyectil en la dirección indicada y lo destruye después de su tiempo de vida.
     public void Launch(Vector2 direction)
     {
@@ -68,8 +74,14 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Verifica si el objeto pertenece a la capa del jugador.
-        if ((targetLayers.value & (1 << other.gameObject.layer)) == 0) return;
+        int otherLayer = 1 << other.gameObject.layer;
+        if ((blockingLayers.value & otherLayer) != 0)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        if ((targetLayers.value & otherLayer) == 0) return;
 
         IDamageable target = other.GetComponentInParent<IDamageable>();
         if (target != null && target.IsAlive())

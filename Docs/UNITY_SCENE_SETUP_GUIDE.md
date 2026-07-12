@@ -3,6 +3,76 @@
 Esta guía parte del estado actual del proyecto y de los scripts ubicados en `Assets/Scripts`.
 El objetivo es obtener dos escenas funcionales: un tutorial breve y un nivel principal de menos de cinco minutos.
 
+## 0. Mapa mental: qué es cada cosa
+
+Antes de arrastrar referencias conviene separar cuatro conceptos de Unity:
+
+- **Script/componente:** contiene una conducta. Ejemplo: `FireAbility` sabe crear una bola de fuego.
+- **Prefab:** es una plantilla de GameObject guardada en Project. Ejemplo: `FireProjectile.prefab` describe el objeto que volará por la escena.
+- **Instancia:** es una copia de un prefab que existe dentro de una escena o fue creada durante el juego.
+- **Referencia del Inspector:** conecta un componente con otro componente, prefab u objeto que necesita para trabajar.
+
+### Las habilidades viven en el Player; el pergamino sólo elige una
+
+El Player tiene agregados `FireAbility` y `RockAbility` desde el comienzo. Esto **no significa que pueda usar las dos al mismo tiempo**. Son las dos conductas disponibles, como dos herramientas guardadas en una caja.
+
+`ScrollLoadout` conserva una sola referencia llamada `equippedAbility`. Esa referencia indica cuál herramienta está equipada ahora. Cuando se presiona K, solamente se ejecuta esa habilidad.
+
+```text
+Tecla K
+  -> PlayerInput envía OnUseScroll
+  -> ScrollLoadout mira equippedAbility
+  -> ejecuta FireAbility O RockAbility
+```
+
+El pergamino del suelo no contiene la habilidad completa ni se agrega como componente al Player. `ScrollCollectible` solamente le dice al `ScrollLoadout`: "ahora equipa Rock" o "ahora equipa Fire".
+
+```text
+Player toca RockScroll
+  -> PlayerCollector detecta un ICollectible
+  -> ScrollCollectible pide equipar Rock
+  -> ScrollLoadout cambia equippedAbility de FireAbility a RockAbility
+  -> el pergamino del suelo pasa a representar Fire
+```
+
+Este diseño evita agregar y destruir componentes durante la partida, mantiene todas las referencias configurables en el prefab Player y permite que cada habilidad conserve su propio cooldown.
+
+### Diferencia entre FireAbility, Projectile y FireScroll
+
+| Elemento | Dónde existe | Responsabilidad |
+|---|---|---|
+| `FireAbility` | Componente del Player | Decide cuándo y desde dónde crear la bola; configura daño y objetivo. |
+| `FireProjectile.prefab` | Asset dentro de Project | Plantilla de la bola visible que se mueve, detecta impacto y se destruye. |
+| Instancia del proyectil | En la escena durante unos segundos | Es la copia real creada cada vez que se usa fuego. |
+| `FireScroll.prefab` | Asset y luego objeto colocado en el nivel | Coleccionable que selecciona Fire en el `ScrollLoadout`. No dispara nada. |
+
+### Diferencia entre RockAbility, RockEffect y RockScroll
+
+Rock no usa un proyectil viajando. `RockAbility` calcula instantáneamente un círculo delante del Player y daña a los enemigos dentro de ese círculo.
+
+- `RockAbility`: componente del Player; calcula posición, radio y daño.
+- `RockEffect.prefab`: objeto visual opcional que aparece brevemente donde golpeó la roca. No necesita Collider ni script de daño.
+- `RockScroll.prefab`: coleccionable que selecciona Rock en el loadout.
+
+Por eso fuego necesita un prefab con `Rigidbody2D + Collider2D + Projectile`, mientras que el efecto de roca sólo necesita un `SpriteRenderer` y, opcionalmente, un Animator.
+
+### Qué objeto debe conservar cada responsabilidad
+
+```text
+Player (root: física y gameplay)
+├── Rigidbody2D / Collider2D / PlayerInput
+├── Health / PlayerStats / PlayerMovement / PlayerAttack
+├── PlayerCollector / ScoreTracker / TemporaryPowerUpController
+├── ScrollLoadout / FireAbility / RockAbility
+├── PlayerAnimator (puente entre gameplay y Animator)
+├── Visual (hijo: solamente representación visual)
+│   ├── SpriteRenderer
+│   └── Animator
+└── AttackOrigin (hijo: marcador invisible)
+```
+
+El root se mueve y colisiona. `Visual` cambia sprites. Separarlos evita que una animación mueva accidentalmente el collider o el Rigidbody.
+
 ## 1. Preparación del proyecto
 
 ### Escenas en la build
@@ -121,6 +191,16 @@ Pintar en `Obstacles` solamente lo que realmente bloquea movimiento: troncos, ro
 
 Usar `Assets/Prefabs/Player.prefab` como única fuente del jugador para ambas escenas.
 
+### Abrir y editar el prefab sin modificar una escena
+
+1. En la ventana Project, hacer doble clic en `Assets/Prefabs/Player.prefab`.
+2. Unity abre Prefab Mode y muestra sólo el Player.
+3. Seleccionar el objeto root `Player` para agregar scripts de gameplay.
+4. Crear o seleccionar el hijo `Visual` para los componentes gráficos.
+5. Guardar con Ctrl+S y volver a la escena con la flecha de la esquina superior izquierda.
+
+No agregar componentes diferentes a las copias de Tutorial y Level1. Editar el prefab hace que ambas instancias reciban la misma configuración y evita que se desincronicen.
+
 ### Componentes del root
 
 - Layer: `Player`
@@ -159,6 +239,18 @@ Player
 
 `Visual` permite animar o voltear el sprite sin deformar el collider y el Rigidbody del root.
 
+Para crearlo:
+
+1. Clic derecho sobre Player en Hierarchy > `Create Empty`; nombrarlo `Visual`.
+2. Con Visual seleccionado, `Add Component > Sprite Renderer`.
+3. Arrastrar al campo Sprite un frame Idle del ninja. Es sólo la imagen que se verá antes de crear las animaciones.
+4. `Add Component > Animator` sobre el mismo Visual.
+5. No agregar Rigidbody2D ni Collider2D a Visual.
+6. Clic derecho sobre Player > `Create Empty`; nombrarlo `AttackOrigin`.
+7. Dejar AttackOrigin sin SpriteRenderer, Collider ni scripts. Es un punto invisible que `PlayerAttack` mueve automáticamente.
+
+Si el Player actual ya tiene SpriteRenderer en el root, mover ese componente a Visual o crear Visual con uno nuevo y quitar el del root. Debe quedar un solo SpriteRenderer encargado del cuerpo del personaje.
+
 ### Referencias del Inspector
 
 `PlayerMovement`:
@@ -191,6 +283,10 @@ El script reposiciona `AttackOrigin` automáticamente según la última direcci�
   - Elemento 1: `RockAbility`.
 - Equipped Ability: `FireAbility` para comenzar con fuego, o dejar vacío si se quiere entregar el primer pergamino durante el tutorial.
 
+Para asignarlos, arrastrar desde el encabezado de cada componente del mismo Inspector: arrastrar `Fire Ability (Script)` al elemento 0 y `Rock Ability (Script)` al elemento 1. No se arrastran los archivos `.cs` desde Project; se arrastran las instancias de los componentes que están agregadas al Player.
+
+Ambos componentes pueden permanecer habilitados. `ScrollLoadout` no usa el estado enabled/disabled: simplemente llama a la referencia que está equipada.
+
 `FireAbility`:
 
 - Fire Projectile Prefab: prefab de bola de fuego.
@@ -214,9 +310,26 @@ El script reposiciona `AttackOrigin` automáticamente según la última direcci�
 - Health: `Health`.
 - Animator: Animator del hijo `Visual`.
 
+En este caso sí se arrastra un componente de un hijo: desplegar Player en Hierarchy, seleccionar/ubicar Visual y arrastrar su componente Animator al campo Animator de `PlayerAnimator`.
+
 Después de configurar el prefab, presionar `Overrides > Apply All` si se trabajó sobre una instancia.
 
 ## 6. Proyectiles y efecto de roca
+
+Un proyectil no se coloca normalmente en la escena. Se construye una vez, se arrastra a Project para convertirlo en prefab y luego `FireAbility` o `RangedEnemy` crea instancias con `Instantiate`.
+
+Jerarquía simple de cualquier proyectil:
+
+```text
+FireProjectile (un solo GameObject)
+├── Transform
+├── SpriteRenderer
+├── Rigidbody2D
+├── CircleCollider2D
+└── Projectile
+```
+
+No necesita un objeto hijo salvo que el sprite tenga un efecto visual adicional.
 
 ### Proyectil enemigo
 
@@ -230,9 +343,26 @@ En `Assets/Prefabs/Proyectiles/Projectile.prefab`:
   - Speed sugerido: 5 o 6.
   - Lifetime: 4.
 
+El prefab no guarda el daño del enemigo: `RangedEnemy` llama `SetDamage` al crear cada instancia. Así dos enemigos pueden compartir el mismo prefab pero disparar con daños diferentes.
+
 ### Bola de fuego
 
-El prefab actual `FireAbilty.prefab` necesita recibir el componente `Projectile`.
+El prefab actual `FireAbilty.prefab` necesita recibir el componente `Projectile`. El nombre tiene un typo histórico; puede renombrarse a `FireProjectile.prefab` desde Unity para que resulte más claro.
+
+Para construirlo desde cero:
+
+1. En una escena, crear `GameObject > Create Empty` y nombrarlo `FireProjectile`.
+2. Resetear Transform a posición 0,0,0 y escala 1,1,1.
+3. Agregar `SpriteRenderer` y colocar el sprite de bola de fuego en su campo Sprite.
+4. Elegir Sorting Layer `FX`.
+5. Agregar `Rigidbody2D`: Dynamic, Gravity Scale 0, Freeze Rotation Z.
+6. Agregar `CircleCollider2D` y activar `Is Trigger`.
+7. Ajustar el radio del collider para cubrir sólo la parte visible del fuego.
+8. Agregar el script `Projectile`.
+9. Configurar Target Layers = Enemy, Speed = 7, Lifetime = 4.
+10. Arrastrar FireProjectile desde Hierarchy a `Assets/Prefabs/Proyectiles`.
+11. Eliminar la copia de la escena: desde ahora la crea FireAbility.
+12. Abrir `Player.prefab` y arrastrar el prefab de Project al campo `Fire Projectile Prefab` de FireAbility.
 
 - Layer: `PlayerProjectile`.
 - `Rigidbody2D`: Dynamic, Gravity Scale 0.
@@ -240,6 +370,17 @@ El prefab actual `FireAbilty.prefab` necesita recibir el componente `Projectile`
 - `Projectile`: Speed 7, Target Layers `Enemy`, Lifetime 4.
 
 `FireAbility` vuelve a asignar la capa objetivo y el daño al instanciarla, pero el componente `Projectile` debe existir en el prefab.
+
+Flujo al presionar K con fuego equipado:
+
+```text
+FireAbility recibe la dirección del Player
+  -> instancia FireProjectile delante del Player
+  -> configura Damage y Target Layers
+  -> Projectile aplica velocidad al Rigidbody2D
+  -> al tocar un IDamageable en Layer Enemy, causa daño
+  -> destruye la instancia
+```
 
 ### Efecto de roca
 
@@ -251,9 +392,22 @@ Crear `RockEffect.prefab` con:
 
 Puede ser un sprite estático al principio. Después se le puede agregar Animator con una aparición corta.
 
+Pasos exactos:
+
+1. Crear Empty `RockEffect`.
+2. Agregar `SpriteRenderer` y poner un sprite de roca.
+3. Elegir Sorting Layer `FX`.
+4. No agregar `Projectile`, Rigidbody2D, Health ni Collider2D.
+5. Arrastrarlo a `Assets/Prefabs/FX/RockEffect.prefab` (crear la carpeta FX si falta).
+6. Asignarlo al campo `Rock Effect Prefab` de RockAbility en el Player.
+
+RockAbility crea esta imagen en el centro del círculo de ataque y la destruye luego de `Effect Lifetime`. El círculo blanco/gris puede verse seleccionando el Player en Scene porque el script lo dibuja como Gizmo. El daño funciona incluso si Rock Effect Prefab queda vacío; en ese caso simplemente no habrá feedback visual.
+
 ## 7. Pergaminos intercambiables
 
 Crear dos prefabs: `FireScroll.prefab` y `RockScroll.prefab`.
+
+Estos prefabs son objetos quietos del escenario. No deben tener `FireAbility` ni `RockAbility`: esas conductas pertenecen al Player. Tampoco deben tener `Projectile`.
 
 Cada uno necesita:
 
@@ -270,6 +424,25 @@ En ambos `ScrollCollectible`:
 
 En FireScroll elegir Type `Fire`; en RockScroll, Type `Rock`.
 
+### Crear FireScroll paso a paso
+
+1. En Hierarchy, crear Empty `FireScroll`.
+2. Agregar `SpriteRenderer`.
+3. Arrastrar `ScrollFire.png` al campo Sprite.
+4. Agregar `CircleCollider2D` o `BoxCollider2D` y activar `Is Trigger`.
+5. Agregar `ScrollCollectible`.
+6. En Scroll Type elegir `Fire`.
+7. En Fire Sprite asignar `ScrollFire.png`.
+8. En Rock Sprite asignar `ScrollRock.png`.
+9. En Sprite Renderer arrastrar el SpriteRenderer del mismo objeto.
+10. Arrastrar el GameObject a `Assets/Prefabs/Coleccionables` para crear el prefab.
+
+### Crear RockScroll
+
+Duplicar FireScroll en Project, renombrarlo `RockScroll`, abrirlo y cambiar `Scroll Type` a `Rock`. `ScrollCollectible.Awake` cambiará el SpriteRenderer al sprite de roca automáticamente al jugar.
+
+No agregar Rigidbody2D si el pergamino permanecerá quieto. El Player ya tiene Rigidbody2D, por lo que la combinación Player + Collider Trigger del scroll genera el evento de recolección.
+
 El intercambio funciona así:
 
 1. El Player tiene Fire.
@@ -277,6 +450,8 @@ El intercambio funciona así:
 3. El Player equipa Rock.
 4. El objeto del suelo cambia a Fire.
 5. Si vuelve a recogerlo, recupera Fire y deja Rock.
+
+Si `PlayerCollector.Scroll Loadout` está vacío, tocar el pergamino no producirá ningún cambio. Si `ScrollLoadout.Available Abilities` no contiene FireAbility y RockAbility, aparecerá un warning indicando que la habilidad no está configurada.
 
 ## 8. Enemigos
 
@@ -323,9 +498,68 @@ La embestida aplica daño una sola vez por objetivo durante cada carga.
 
 ## 9. Animator Controllers
 
-Los scripts esperan exactamente estos parámetros.
+### Qué hace cada pieza
 
-Player:
+- **Animation Clip (`.anim`):** secuencia de sprites y su velocidad. Ejemplo: `Player_Walk_Down`.
+- **Animator Controller (`.controller`):** diagrama que decide qué clip reproducir.
+- **Animator (componente):** reproduce el controller sobre el SpriteRenderer de un GameObject.
+- **PlayerAnimator/EnemyAnimator (scripts):** traducen el gameplay a parámetros. No contienen sprites ni clips.
+
+El componente Animator y el SpriteRenderer deben estar juntos en `Visual`. El script `PlayerAnimator` puede estar en el root Player porque recibe referencias explícitas.
+
+```text
+PlayerMovement dice "se mueve hacia arriba"
+  -> PlayerAnimator escribe Speed, MoveX y MoveY
+  -> Animator Controller elige WalkUp
+  -> Animator cambia el campo Sprite del SpriteRenderer de Visual
+```
+
+### Carpetas recomendadas
+
+Crear:
+
+```text
+Assets/Animations
+├── Player
+│   ├── Clips
+│   └── Player.controller
+├── MeleeEnemy
+├── RangedEnemy
+└── Boss
+```
+
+### Crear un Animation Clip de sprites
+
+Para el Player, los sprites preparados se encuentran en `Assets/NinjaAssetPack/Actor/CharacterAnimated/NinjaGreen/Separate`. Cada archivo PNG aparece como una flecha desplegable en Project y contiene varios sub-sprites.
+
+Ejemplo para `Player_Walk_Down`:
+
+1. Abrir `Player.prefab` en Prefab Mode.
+2. Seleccionar el hijo `Visual`, no el root Player.
+3. Abrir `Window > Animation > Animation`.
+4. Si Visual todavía no tiene controller, pulsar `Create` y guardar `Player.controller` en `Assets/Animations/Player`.
+5. En el desplegable de clips elegir `Create New Clip`.
+6. Guardar como `Assets/Animations/Player/Clips/Player_Walk_Down.anim`.
+7. En Project, expandir `Walk.png` para ver sus sprites internos.
+8. Seleccionar en orden solamente los frames que muestran caminar hacia abajo.
+9. Arrastrarlos a la timeline de Animation.
+10. Ajustar Samples a 8-12 para pixel art.
+11. Seleccionar el clip en Project y activar `Loop Time` para Walk e Idle.
+
+El orden exacto de los grupos de cuatro depende del spritesheet. Mirar la miniatura o reproducir el clip; no asumir que el primer grupo siempre es Down. Cada clip direccional debe contener sólo los frames de una dirección.
+
+Crear como mínimo:
+
+- `Player_Idle_Down`, `Idle_Up`, `Idle_Left`, `Idle_Right`.
+- `Player_Walk_Down`, `Walk_Up`, `Walk_Left`, `Walk_Right`.
+- `Player_Attack_Down`, `Attack_Up`, `Attack_Left`, `Attack_Right`.
+- `Player_Hit` y `Player_Dead` pueden comenzar como clips no direccionales.
+
+No activar Loop Time en Attack, Hit ni Dead.
+
+### Parámetros exactos del Player Controller
+
+En la ventana Animator, pestaña Parameters, crear respetando mayúsculas:
 
 - `Speed` Float
 - `MoveX` Float
@@ -334,7 +568,70 @@ Player:
 - `Hit` Trigger
 - `Dead` Bool
 
-Enemigos:
+Si se escribe `IsAttacking`, `IsDead` u otro nombre, el script no controlará ese parámetro.
+
+### Idle direccional con Blend Tree
+
+1. En Animator, clic derecho > `Create State > From New Blend Tree`.
+2. Renombrar el estado `Idle`.
+3. Doble clic en el Blend Tree.
+4. Blend Type: `2D Simple Directional`.
+5. Parameters: X = `MoveX`, Y = `MoveY`.
+6. Agregar cuatro Motions:
+   - IdleRight en `(1, 0)`.
+   - IdleLeft en `(-1, 0)`.
+   - IdleUp en `(0, 1)`.
+   - IdleDown en `(0, -1)`.
+7. Volver a Base Layer y marcar Idle como estado por defecto.
+
+### Walk direccional
+
+Crear otro Blend Tree `Walk` con la misma configuración y los cuatro clips Walk.
+
+Transiciones:
+
+- Idle -> Walk: desactivar Has Exit Time; condición `Speed > 0.01`.
+- Walk -> Idle: desactivar Has Exit Time; condición `Speed < 0.01`.
+- Transition Duration puede ser 0 para que el pixel art no mezcle poses.
+
+### Ataque direccional
+
+Crear un tercer Blend Tree 2D llamado `Attack` con los cuatro clips Attack y las mismas posiciones. Desactivar Loop en los clips.
+
+Transiciones:
+
+- Any State -> Attack: condición Trigger `Attack`, Has Exit Time desactivado, Duration 0.
+- Attack -> Idle: Has Exit Time activado, Exit Time 1, sin condiciones, Duration 0.
+
+Si Attack vuelve siempre a Idle aunque el jugador siga caminando, es aceptable para la primera versión. Luego puede agregarse una salida a Walk.
+
+### Hit y Dead
+
+- Crear estado `Hit` desde el clip Hit.
+- Any State -> Hit con Trigger `Hit`.
+- Hit -> Idle con Has Exit Time.
+- Crear estado `Dead` desde el clip Dead.
+- Any State -> Dead con condición `Dead = true`.
+- Dead no debe tener transiciones de salida y su clip no debe hacer loop.
+
+Conviene que la transición a Dead aparezca arriba o tenga prioridad sobre Hit, porque un golpe que deja la vida en cero dispara ambos eventos en el mismo frame.
+
+### Enemigos
+
+Jerarquía recomendada:
+
+```text
+MeleeEnemy (root)
+├── Rigidbody2D / Collider2D / Health / MeleeEnemy
+└── Visual
+    ├── SpriteRenderer
+    ├── Animator
+    └── EnemyAnimator
+```
+
+Colocar `EnemyAnimator` en Visual hace que encuentre automáticamente el Animator del mismo objeto y `EnemyBase`/Health en el padre. También se puede colocar en el root, pero entonces hay que arrastrar manualmente el Animator de Visual.
+
+Parámetros de controllers enemigos:
 
 - `Speed` Float
 - `MoveX` Float
@@ -344,22 +641,15 @@ Enemigos:
 - `Hit` Trigger
 - `Dead` Bool
 
-Para Player conviene crear Blend Trees direccionales para Idle y Walk. Los sprites de `CharacterAnimated/NinjaGreen/Separate` ya están cortados:
+Se puede empezar más simple que con el Player:
 
-- Idle: 16 frames, normalmente 4 por dirección.
-- Walk: 16 frames.
-- Attack: 16 frames.
-- Hit: 8 frames.
-- Dead: 2 frames.
+- Idle y Walk direccionales si el sprite los ofrece.
+- Un solo clip Attack si no hay cuatro direcciones.
+- Ranged usa el Trigger `Attack` cuando dispara.
+- Boss usa `Attack` para melee y `Special` para embestida.
+- Hit y Dead pueden ser no direccionales.
 
-Transiciones recomendadas:
-
-- Idle <-> Walk usando `Speed`.
-- Any State -> Attack con Trigger `Attack`.
-- Any State -> Hit con Trigger `Hit`.
-- Any State -> Dead con `Dead = true`, sin transición de salida.
-
-En los enemigos, `Attack` se dispara tanto para melee como para el disparo ranged. `Special` se usa para la embestida del Boss.
+En `EnemyBase`, configurar `Death Disable Delay` ligeramente mayor o igual a la duración de Dead. Si el clip dura 0.6 segundos, usar 0.7. De otro modo el GameObject se desactivará antes de que termine la animación.
 
 ## 10. Cámara
 

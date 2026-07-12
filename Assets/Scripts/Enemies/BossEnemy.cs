@@ -88,6 +88,12 @@ public class BossEnemy : EnemyBase
 
         float distance = GetDistanceToTarget();
 
+        if (!IsTargetDetected())
+        {
+            StopMovement();
+            return;
+        }
+
         if (distance <= attackRange)
         {
             StopMovement();
