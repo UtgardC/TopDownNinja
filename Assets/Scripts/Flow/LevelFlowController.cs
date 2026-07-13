@@ -28,8 +28,9 @@ Notas:
 */
 public class LevelFlowController : MonoBehaviour
 {
-    [SerializeField] private string mainLevelSceneName = "Level1";
     [SerializeField] private string tutorialSceneName = "Tutorial";
+    [SerializeField] private string mainLevelSceneName = "Level1";
+    [SerializeField] private string secondaryLevelSceneName = "Level2";
 
     // Carga el nivel principal del juego.
     public void LoadMainLevel()
@@ -41,6 +42,11 @@ public class LevelFlowController : MonoBehaviour
     public void LoadTutorial()
     {
         LoadScene(tutorialSceneName);
+    }
+
+    public void LoadSecondLevel()
+    {
+        LoadScene(secondaryLevelSceneName);
     }
 
     // Recarga la escena actual. Útil para reiniciar tras una derrota.
