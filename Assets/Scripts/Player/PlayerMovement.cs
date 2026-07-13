@@ -1,32 +1,23 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// Hito 3 — Movimiento y combate del jugador
+// Hito 3 — Movimiento del jugador
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Añadir al GameObject del jugador.
+- Añadir al GameObject del jugador ("Player").
 
 Componentes necesarios:
-- Rigidbody2D: Body Type = Dynamic, Gravity Scale = 0, Freeze Rotation Z = true.
-- PlayerInput: Actions = InputSystem_Actions asset, Behavior = Send Messages.
+- Rigidbody2D: Body Type = Dynamic, Gravity Scale = 0, Collision Detection = Continuous,
+               Constraints -> Freeze Rotation Z = true.
+- PlayerInput: configurar para usar el Input System con "Send Messages"
+               y asociar el asset InputSystem_Actions.
 - PlayerStats en el mismo GameObject.
 
 Referencias del Inspector:
 - stats: arrastrar el componente PlayerStats del mismo GameObject.
-
-Layers y Tags:
-- Ninguno requerido por este script.
-
-Animación e Input:
-- El componente PlayerInput llama automáticamente a OnMove cuando el jugador
-  presiona las teclas de movimiento (WASD o flechas).
-- Para animaciones: leer GetFacingDirection() desde el controlador de animación.
-
-Notas:
-- El movimiento usa Rigidbody2D.linearVelocity para que funcione con la física 2D.
 */
 public class PlayerMovement : MonoBehaviour
 {
@@ -34,26 +25,16 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
-    private Vector2 facingDirection = Vector2.down;
-
-    public Vector2 MoveInput => moveInput;
-    public Vector2 FacingDirection => facingDirection;
-    public bool IsMoving => moveInput.sqrMagnitude > 0.001f;
-    public Vector2 Velocity => rb != null ? rb.linearVelocity : Vector2.zero;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Recibe el input de movimiento desde el sistema de input (PlayerInput → Send Messages).
+    // Mensaje automático enviado por el PlayerInput al detectar movimiento.
     private void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
-        if (moveInput.sqrMagnitude > 0.001f)
-        {
-            facingDirection = moveInput.normalized;
-        }
     }
 
     private void FixedUpdate()
@@ -61,23 +42,22 @@ public class PlayerMovement : MonoBehaviour
         Move(moveInput);
     }
 
-    // Aplica el movimiento al Rigidbody2D usando la velocidad de las estadísticas.
+    // Aplica velocidad al Rigidbody2D basada en la entrada y la estadística de velocidad.
     private void Move(Vector2 direction)
     {
-        if (rb == null || stats == null) return;
         rb.linearVelocity = direction.normalized * stats.MoveSpeed;
     }
 
-    // Devuelve la dirección en la que mira el jugador según su último movimiento.
-    // Devuelve Vector2.down si el jugador está quieto (orientación por defecto).
+    // Expone el vector de entrada actual de movimiento del jugador.
+    public Vector2 MoveInput => moveInput;
+
+    // Devuelve la última dirección hacia la que el jugador apuntaba o se movía.
+    // Utilizado por ScrollLoadout para orientar el disparo de habilidades.
     public Vector2 GetFacingDirection()
     {
-        return facingDirection;
-    }
+        if (moveInput != Vector2.zero)
+            return moveInput.normalized;
 
-    private void OnDisable()
-    {
-        moveInput = Vector2.zero;
-        if (rb != null) rb.linearVelocity = Vector2.zero;
+        return Vector2.zero; // Modificado a Vector2.zero para detener animaciones.
     }
 }

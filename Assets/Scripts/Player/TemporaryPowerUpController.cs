@@ -2,42 +2,35 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-// Hito 9 — Power-up temporal
+// Hito 9 — Controlador de Power-ups temporales
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Añadir al GameObject del jugador junto a PlayerStats.
+- Añadir al GameObject del jugador ("Player").
 
 Componentes necesarios:
 - PlayerStats en el mismo GameObject.
 
 Referencias del Inspector:
-- Ninguna adicional (lee PlayerStats desde GetComponent en Awake).
-
-Layers y Tags:
-- Ninguno requerido por este script.
+- Ninguna requerida (se enlaza automáticamente a PlayerStats en Awake).
 
 Notas:
-- Suscribir OnBuffStarted y OnBuffEnded desde HUDController para mostrar el estado del buff.
-- Si el jugador recoge un buff del mismo tipo mientras ya está activo,
-  el buff anterior se cancela y comienza uno nuevo con la nueva duración.
-- Cada tipo de buff se maneja de forma independiente; pueden estar activos simultáneamente.
+- Maneja la duración de los efectos mediante Corrutinas.
+- Evita solapamientos: si se recoge un buff activo del mismo tipo,
+  cancela la corrutina anterior y la inicia de nuevo con la duración fresca.
 */
 public class TemporaryPowerUpController : MonoBehaviour
 {
     private PlayerStats stats;
 
-    // Coroutines activas por tipo de buff (permite cancelarlas individualmente).
     private Coroutine speedCoroutine;
     private Coroutine damageCoroutine;
     private Coroutine attackSpeedCoroutine;
 
-    // Notifica cuando un buff comienza: tipo y duración en segundos.
+    // Eventos para que el HUD sepa cuándo mostrar u ocultar la UI del buff.
     public event Action<BuffType, float> OnBuffStarted;
-
-    // Notifica cuando un buff termina.
     public event Action<BuffType> OnBuffEnded;
 
     private void Awake()
@@ -45,7 +38,7 @@ public class TemporaryPowerUpController : MonoBehaviour
         stats = GetComponent<PlayerStats>();
     }
 
-    // Activa un buff temporal del tipo indicado. Si ya había uno activo del mismo tipo, lo reinicia.
+    // Activa un buff multiplicador específico por una duración en segundos.
     public void ActivateBuff(BuffType type, float multiplier, float duration)
     {
         switch (type)
@@ -55,8 +48,7 @@ public class TemporaryPowerUpController : MonoBehaviour
                 speedCoroutine = StartCoroutine(RunBuff(
                     type, duration,
                     () => stats.ApplySpeedMultiplier(multiplier),
-                    () => stats.ResetSpeedMultiplier(),
-                    () => speedCoroutine = null
+                    () => stats.ResetSpeedMultiplier()
                 ));
                 break;
 
@@ -65,8 +57,7 @@ public class TemporaryPowerUpController : MonoBehaviour
                 damageCoroutine = StartCoroutine(RunBuff(
                     type, duration,
                     () => stats.ApplyDamageMultiplier(multiplier),
-                    () => stats.ResetDamageMultiplier(),
-                    () => damageCoroutine = null
+                    () => stats.ResetDamageMultiplier()
                 ));
                 break;
 
@@ -75,31 +66,29 @@ public class TemporaryPowerUpController : MonoBehaviour
                 attackSpeedCoroutine = StartCoroutine(RunBuff(
                     type, duration,
                     () => stats.ApplyAttackSpeedMultiplier(multiplier),
-                    () => stats.ResetAttackSpeedMultiplier(),
-                    () => attackSpeedCoroutine = null
+                    () => stats.ResetAttackSpeedMultiplier()
                 ));
                 break;
         }
     }
 
-    // Aplica el buff, espera la duración y luego lo revierte.
-    private IEnumerator RunBuff(BuffType type, float duration, Action apply, Action remove, Action clearReference)
+    // Ejecuta el ciclo de vida del Buff: aplica, espera, remueve y notifica eventos.
+    private IEnumerator RunBuff(BuffType type, float duration, Action apply, Action remove)
     {
         apply();
         OnBuffStarted?.Invoke(type, duration);
 
-        yield return new WaitForSeconds(Mathf.Max(0f, duration));
+        yield return new WaitForSeconds(duration);
 
         remove();
-        clearReference();
         OnBuffEnded?.Invoke(type);
     }
 
-    // Cancela todos los buffs activos y restaura los multiplicadores base.
+    // Cancela y limpia todos los efectos activos. Útil al morir o cambiar de nivel.
     public void CancelAllBuffs()
     {
-        if (speedCoroutine != null)     { StopCoroutine(speedCoroutine);      stats.ResetSpeedMultiplier();       OnBuffEnded?.Invoke(BuffType.Speed); }
-        if (damageCoroutine != null)    { StopCoroutine(damageCoroutine);     stats.ResetDamageMultiplier();      OnBuffEnded?.Invoke(BuffType.Damage); }
+        if (speedCoroutine != null)      { StopCoroutine(speedCoroutine);       stats.ResetSpeedMultiplier();       OnBuffEnded?.Invoke(BuffType.Speed); }
+        if (damageCoroutine != null)     { StopCoroutine(damageCoroutine);      stats.ResetDamageMultiplier();      OnBuffEnded?.Invoke(BuffType.Damage); }
         if (attackSpeedCoroutine != null){ StopCoroutine(attackSpeedCoroutine); stats.ResetAttackSpeedMultiplier(); OnBuffEnded?.Invoke(BuffType.AttackSpeed); }
 
         speedCoroutine = null;

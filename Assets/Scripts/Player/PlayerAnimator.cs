@@ -16,87 +16,90 @@ Referencias del Inspector:
 - health: arrastrar el componente Health del jugador.
 
 Animación:
-- El Animator Controller debe tener: Speed (Float), MoveX (Float), MoveY (Float),
-  Attack (Trigger), Hit (Trigger) y Dead (Bool).
-- Los eventos de PlayerAttack y Health disparan Attack, Hit y Dead automáticamente.
-
-Notas:
-- Este script es opcional. El juego funciona sin él; solo mejora el feedback visual.
+- El Animator Controller (NinjaAnimator) debe tener estos parámetros:
+    - Speed (Float): controla si reproduce Idle o Walk.
+    - IsAttacking (Trigger): activa la animación de ataque.
+    - IsHit (Trigger): activa la animación de golpe recibido.
+    - IsDead (Bool): activa la animación de muerte.
 */
 public class PlayerAnimator : MonoBehaviour
 {
     [SerializeField] private PlayerMovement movement;
-    [SerializeField] private PlayerAttack playerAttack;
     [SerializeField] private Health health;
-    [SerializeField] private Animator animator;
 
-    private static readonly int SpeedHash = Animator.StringToHash("Speed");
-    private static readonly int MoveXHash = Animator.StringToHash("MoveX");
-    private static readonly int MoveYHash = Animator.StringToHash("MoveY");
-    private static readonly int AttackHash = Animator.StringToHash("Attack");
-    private static readonly int HitHash = Animator.StringToHash("Hit");
-    private static readonly int DeadHash = Animator.StringToHash("Dead");
+    private Animator animator;
+    private bool hasSpeedParam;
+    private bool hasAttackParam;
+    private bool hasHitParam;
+    private bool hasDeadParam;
 
     private void Awake()
     {
-        if (movement == null) movement = GetComponent<PlayerMovement>();
-        if (playerAttack == null) playerAttack = GetComponent<PlayerAttack>();
-        if (health == null) health = GetComponent<Health>();
-        if (animator == null) animator = GetComponent<Animator>();
-    }
-
-    private void OnEnable()
-    {
-        if (playerAttack != null)
+        animator = GetComponent<Animator>();
+        if (animator == null)
         {
-            playerAttack.OnAttackPerformed += HandleAttack;
+            Debug.LogWarning("PlayerAnimator: no se encontró un Animator en el GameObject. Las animaciones están desactivadas.");
+            return;
         }
 
+        // Verifica la existencia de cada parámetro en el Animator de Unity para evitar errores silenciosos
+        foreach (AnimatorControllerParameter param in animator.parameters)
+        {
+            if (param.name == "Speed") hasSpeedParam = true;
+            if (param.name == "IsAttacking") hasAttackParam = true;
+            if (param.name == "IsHit") hasHitParam = true;
+            if (param.name == "IsDead") hasDeadParam = true;
+        }
+
+        if (!hasSpeedParam) Debug.LogError("PlayerAnimator: FALTAPARÁMETRO. El Animator del jugador no tiene un parámetro Float llamado 'Speed'.");
+        if (!hasAttackParam) Debug.LogWarning("PlayerAnimator: AVISO. El Animator del jugador no tiene un parámetro Trigger llamado 'IsAttacking'.");
+        if (!hasHitParam) Debug.LogWarning("PlayerAnimator: AVISO. El Animator del jugador no tiene un parámetro Trigger llamado 'IsHit'.");
+        if (!hasDeadParam) Debug.LogWarning("PlayerAnimator: AVISO. El Animator del jugador no tiene un parámetro Bool llamado 'IsDead'.");
+    }
+
+    private void Start()
+    {
+        // Al morir, activa el estado de muerte en el Animator.
         if (health != null)
         {
-            health.OnDamaged += HandleDamaged;
             health.OnDied += HandleDeath;
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (playerAttack != null)
-        {
-            playerAttack.OnAttackPerformed -= HandleAttack;
-        }
-
-        if (health != null)
-        {
-            health.OnDamaged -= HandleDamaged;
-            health.OnDied -= HandleDeath;
         }
     }
 
     private void Update()
     {
-        if (movement == null || animator == null) return;
+        if (animator == null || movement == null) return;
 
-        Vector2 facing = movement.GetFacingDirection();
-        animator.SetFloat(SpeedHash, movement.IsMoving ? movement.Velocity.magnitude : 0f);
-        animator.SetFloat(MoveXHash, facing.x);
-        animator.SetFloat(MoveYHash, facing.y);
+        // Regresado a la lógica original basada en GetFacingDirection
+        float speed = movement.GetFacingDirection().magnitude;
+        animator.SetFloat("Speed", speed);
     }
 
     // Llama a este método desde PlayerAttack cuando ejecuta un ataque exitoso.
-    private void HandleAttack()
+    public void TriggerAttack()
     {
-        if (animator != null) animator.SetTrigger(AttackHash);
+        if (animator == null || !hasAttackParam) return;
+        animator.SetTrigger("IsAttacking");
     }
 
     // Llama a este método desde Health cuando el jugador recibe daño.
-    private void HandleDamaged(int amount)
+    public void TriggerHit()
     {
-        if (animator != null) animator.SetTrigger(HitHash);
+        if (animator == null || !hasHitParam) return;
+        animator.SetTrigger("IsHit");
     }
 
     private void HandleDeath()
     {
-        if (animator != null) animator.SetBool(DeadHash, true);
+        if (animator == null || !hasDeadParam) return;
+        animator.SetBool("IsDead", true);
+    }
+
+    private void OnDestroy()
+    {
+        if (health != null)
+        {
+            health.OnDied -= HandleDeath;
+        }
     }
 }

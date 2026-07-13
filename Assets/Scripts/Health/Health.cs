@@ -1,28 +1,28 @@
 using System;
 using UnityEngine;
 
-// Hito 2 — Salud, daño y eventos
+// Hito 2 — Sistema de salud y daño
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Añadir a cualquier GameObject que necesite vida: jugador y enemigos.
+- Añadir este componente al Player y a todos los enemigos.
 
 Componentes necesarios:
-- Ninguno adicional obligatorio.
+- Requiere un Collider2D en el mismo GameObject configurado para recibir impactos
+  (los enemigos suelen tenerlo en modo normal y los coleccionables en trigger).
 
 Referencias del Inspector:
-- maxHealth: vida máxima del objeto (entero positivo).
+- maxHealth: cantidad de vida máxima con la que inicia la entidad.
 
 Layers y Tags:
-- Ninguno requerido por este script.
+- No requiere configuraciones específicas por sí mismo, pero depende
+  de que las capas de colisión estén bien configuradas en el motor físico.
 
 Notas:
-- Suscribir OnHealthChanged para actualizar la barra de vida en el HUD.
-- Suscribir OnDied para manejar la muerte: destruir el objeto, notificar derrota, etc.
-- Este script implementa IDamageable: cualquier ataque puede llamar TakeDamage
-  sin conocer si el objetivo es el jugador, un enemigo o un destructible.
+- Ofrece los eventos OnHealthChanged (para actualizar barras de vida o UI)
+  y OnDied (para desencadenar animaciones de muerte o desactivación).
 */
 public class Health : MonoBehaviour, IDamageable
 {
@@ -30,14 +30,13 @@ public class Health : MonoBehaviour, IDamageable
 
     private int currentHealth;
 
-    // Notifica cuando la vida cambia: envía salud actual y máxima.
+    // Evento que notifica cambios en la salud. Pasa (vidaActual, vidaMaxima).
     public event Action<int, int> OnHealthChanged;
 
-    // Notifican la cantidad real aplicada. Son útiles para animación, audio y feedback.
+    // Evento que se ejecuta cada vez que la entidad recibe daño.
     public event Action<int> OnDamaged;
-    public event Action<int> OnHealed;
 
-    // Notifica cuando la vida llega a cero.
+    // Evento que se ejecuta únicamente cuando la salud llega a cero.
     public event Action OnDied;
 
     public int CurrentHealth => currentHealth;
@@ -48,19 +47,17 @@ public class Health : MonoBehaviour, IDamageable
         currentHealth = maxHealth;
     }
 
-    // Aplica daño al objeto. Llama a OnDied si la vida llega a cero.
+    // Resta vida a la entidad. Si llega a 0, lanza OnDied.
     public void TakeDamage(int amount)
     {
         if (!IsAlive()) return;
-        if (amount <= 0) return;
+        if (amount < 0) amount = 0;
 
-        int previousHealth = currentHealth;
         currentHealth -= amount;
         if (currentHealth < 0) currentHealth = 0;
 
-        int appliedDamage = previousHealth - currentHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
-        OnDamaged?.Invoke(appliedDamage);
+        OnDamaged?.Invoke(amount);
 
         if (currentHealth == 0)
         {
@@ -68,31 +65,25 @@ public class Health : MonoBehaviour, IDamageable
         }
     }
 
-    // Aplica curación. No puede superar la vida máxima.
+    // Cura a la entidad sin sobrepasar el límite de vida máxima.
     public void Heal(int amount)
     {
         if (!IsAlive()) return;
-        if (amount <= 0) return;
+        if (amount < 0) amount = 0;
 
-        int previousHealth = currentHealth;
         currentHealth += amount;
         if (currentHealth > maxHealth) currentHealth = maxHealth;
 
-        int appliedHealing = currentHealth - previousHealth;
-        if (appliedHealing == 0) return;
-
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
-        OnHealed?.Invoke(appliedHealing);
     }
 
-    // Devuelve verdadero si la vida es mayor que cero.
+    // Devuelve si la entidad tiene más de 0 de vida.
     public bool IsAlive()
     {
         return currentHealth > 0;
     }
 
-    // Restaura toda la vida incluso si el objeto había muerto.
-    // Se usa, por ejemplo, en el dummy reutilizable del tutorial.
+    // Restablece la salud al valor máximo y notifica los cambios.
     public void RestoreToFull()
     {
         currentHealth = maxHealth;

@@ -1,13 +1,20 @@
-// Hito 1 — Contratos y bases
+// Hito 1 — Interfaces del sistema de combate y recolección
 
-// Contrato para objetos que pueden recibir daño.
-// Implementado por: Health (jugador, enemigos y objetos destructibles).
-// Permite que PlayerAttack y Projectile dañen sin conocer la clase concreta.
+/*
+CONFIGURACIÓN EN UNITY
+- No se añaden a ningún GameObject directamente (son interfaces).
+
+Notas:
+- Cualquier objeto destructible (jugador, enemigos, barriles) debe implementar IDamageable.
+- Cualquier objeto recogible (monedas, comida, power-ups) debe implementar ICollectible.
+*/
+
+// Interfaz para entidades que pueden recibir daño y morir.
 public interface IDamageable
 {
-    // Aplica daño al objeto. amount debe ser un valor positivo.
+    // Aplica daño a la entidad.
     void TakeDamage(int amount);
 
-    // Devuelve verdadero si el objeto continúa con vida.
+    // Devuelve true si la entidad sigue con vida.
     bool IsAlive();
 }

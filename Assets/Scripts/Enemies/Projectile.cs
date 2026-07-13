@@ -1,37 +1,28 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
-// Hito 7 — Segundo enemigo (ranged)
+// Hito 7 — Proyectil para enemigos ranged y pergamino de fuego
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Crear un GameObject "Projectile" y convertirlo en prefab.
+- Crear un objeto en la escena con el Sprite del proyectil (ej. shuriken).
+- Puede crearse como Prefab para ser instanciado dinámicamente.
 
 Componentes necesarios:
-- Rigidbody2D: Body Type = Dynamic, Gravity Scale = 0.
-- Collider2D configurado como Trigger.
-- SpriteRenderer con el sprite del proyectil.
+- Rigidbody2D: Body Type = Dynamic, Gravity Scale = 0, Collision Detection = Continuous.
+- Collider2D (ej: CircleCollider2D) con "Is Trigger" marcado = true.
 
 Referencias del Inspector:
-- speed: velocidad de desplazamiento del proyectil.
-- targetLayers: capas que este proyectil puede dañar.
-
-Layers y Tags:
-- En proyectiles enemigos usar Player; en proyectiles del jugador usar Enemy.
-
-Notas:
-- Launch(direction, damage) es llamado por RangedEnemy al disparar.
-- El proyectil se destruye al impactar al jugador o al salir de pantalla (por tiempo).
-- SetDamage permite que RangedEnemy configure el daño antes de lanzar.
+- speed: velocidad de vuelo lineal del proyectil.
+- playerLayer: seleccionar la Layer del objetivo al que puede dañar.
+               (Para shuriken de enemigos = Player; para pergamino de fuego del Player = Enemy).
+- lifetime: tiempo de autodestrucción automática por si no choca con nada.
 */
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float speed = 6f;
-    [FormerlySerializedAs("playerLayer")]
-    [SerializeField] private LayerMask targetLayers;
-    [SerializeField] private LayerMask blockingLayers;
+    [SerializeField] private LayerMask playerLayer;
     [SerializeField] private float lifetime = 4f;
 
     private int damage;
@@ -42,53 +33,31 @@ public class Projectile : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Configura el daño del proyectil antes de lanzarlo.
+    // Configura el daño que infligirá el proyectil (llamado desde el script que lo lanza).
     public void SetDamage(int amount)
     {
-        damage = Mathf.Max(0, amount);
+        damage = amount;
     }
 
-    public void SetTargetLayers(LayerMask layers)
-    {
-        targetLayers = layers;
-    }
-
-    public void SetBlockingLayers(LayerMask layers)
-    {
-        blockingLayers = layers;
-    }
-
-    // Lanza el proyectil en la dirección indicada y lo destruye después de su tiempo de vida.
+    // Aplica impulso físico al proyectil y programa su autodestrucción.
     public void Launch(Vector2 direction)
     {
-        if (rb == null)
-        {
-            Debug.LogError("Projectile necesita un Rigidbody2D.", this);
-            Destroy(gameObject);
-            return;
-        }
-
         rb.linearVelocity = direction.normalized * speed;
         Destroy(gameObject, lifetime);
     }
 
+    // Detecta impacto. Si choca con el objetivo correcto, le hace daño y se destruye.
     private void OnTriggerEnter2D(Collider2D other)
     {
-        int otherLayer = 1 << other.gameObject.layer;
-        if ((blockingLayers.value & otherLayer) != 0)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        // Verifica si el objeto que impactó está en la Layer objetivo.
+        if ((playerLayer.value & (1 << other.gameObject.layer)) == 0) return;
 
-        if ((targetLayers.value & otherLayer) == 0) return;
-
-        IDamageable target = other.GetComponentInParent<IDamageable>();
+        IDamageable target = other.GetComponent<IDamageable>();
         if (target != null && target.IsAlive())
         {
             target.TakeDamage(damage);
         }
 
-        Destroy(gameObject);
+        Destroy(gameObject); // El proyectil se destruye al impactar.
     }
 }

@@ -33,8 +33,6 @@ public abstract class EnemyBase : MonoBehaviour
     [SerializeField] protected Health health;
     [SerializeField] protected float moveSpeed = 2f;
     [SerializeField] protected Transform target;
-    [SerializeField] protected float detectionRange = 10f;
-    [SerializeField] private float deathDisableDelay = 0.75f;
 
     protected Rigidbody2D rb;
 
@@ -45,10 +43,20 @@ public abstract class EnemyBase : MonoBehaviour
 
     public Vector2 Velocity => rb != null ? rb.linearVelocity : Vector2.zero;
 
+    protected void NotifyAttackPerformed()
+    {
+        OnAttackPerformed?.Invoke();
+    }
+
+    protected void NotifySpecialPerformed()
+    {
+        OnSpecialPerformed?.Invoke();
+    }
+
+
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        if (health == null) health = GetComponent<Health>();
     }
 
     protected virtual void Start()
@@ -59,6 +67,13 @@ public abstract class EnemyBase : MonoBehaviour
         {
             health.OnDied += HandleDeath;
         }
+    }
+
+    private void TryFindPlayerTarget()
+    {
+        if (target != null) return;
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null) target = player.transform;
     }
 
     protected virtual void Update()
@@ -83,56 +98,20 @@ public abstract class EnemyBase : MonoBehaviour
         if (target == null) return;
 
         Vector2 direction = ((Vector2)target.position - (Vector2)transform.position).normalized;
-        SetVelocity(direction * moveSpeed);
+        rb.linearVelocity = direction * moveSpeed;
     }
 
     // Detiene el movimiento del enemigo.
     protected void StopMovement()
     {
-        SetVelocity(Vector2.zero);
-    }
-
-    protected bool IsTargetDetected()
-    {
-        return target != null && GetDistanceToTarget() <= detectionRange;
-    }
-
-    protected void SetVelocity(Vector2 velocity)
-    {
-        if (rb != null) rb.linearVelocity = velocity;
-    }
-
-    protected void NotifyAttackPerformed()
-    {
-        OnAttackPerformed?.Invoke();
-    }
-
-    protected void NotifySpecialPerformed()
-    {
-        OnSpecialPerformed?.Invoke();
+        rb.linearVelocity = Vector2.zero;
     }
 
     // Maneja la muerte del enemigo: detiene el movimiento, lanza el evento y desactiva el objeto.
     private void HandleDeath()
     {
         StopMovement();
-
-        foreach (Collider2D enemyCollider in GetComponentsInChildren<Collider2D>())
-        {
-            enemyCollider.enabled = false;
-        }
-
         OnEnemyDied?.Invoke();
-        StartCoroutine(DisableAfterDeath());
-    }
-
-    private IEnumerator DisableAfterDeath()
-    {
-        if (deathDisableDelay > 0f)
-        {
-            yield return new WaitForSeconds(deathDisableDelay);
-        }
-
         gameObject.SetActive(false);
     }
 
@@ -140,14 +119,6 @@ public abstract class EnemyBase : MonoBehaviour
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
-    }
-
-    private void TryFindPlayerTarget()
-    {
-        if (target != null) return;
-
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) target = player.transform;
     }
 
     protected virtual void OnDestroy()

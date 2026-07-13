@@ -26,7 +26,7 @@ Notas:
 - Se suscribe a Health.OnDied del jugador para detectar la derrota.
 - Se suscribe a ObjectiveTracker.OnVictory para detectar la victoria.
 - Los paneles de victoria/derrota deben tener botones que llamen a
-  levelFlow.ReloadCurrentScene() (reiniciar) o levelFlow.LoadTutorial() (menú).
+  levelFlow.ReloadCurrentScene() (reiniciar) o GameResultController.OnClickQuit() (salir).
 */
 public class GameResultController : MonoBehaviour
 {
@@ -109,10 +109,16 @@ public class GameResultController : MonoBehaviour
         if (levelFlow != null) levelFlow.ReloadCurrentScene();
     }
 
-    // Vuelve al tutorial. Conectar al botón "Menú" del panel de derrota o victoria.
-    public void OnClickMenu()
+    // Cierra la aplicación. Conectar al botón "Salir" del panel de victoria o derrota.
+    // En el Editor de Unity esto detiene el Play Mode en lugar de cerrar la ventana.
+    public void OnClickQuit()
     {
         ResumeTime();
-        if (levelFlow != null) levelFlow.LoadTutorial();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

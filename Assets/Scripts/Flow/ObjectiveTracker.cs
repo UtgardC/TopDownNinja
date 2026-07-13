@@ -1,28 +1,23 @@
 using System;
 using UnityEngine;
 
-// Hito 12 — Tutorial, progresión y objetivo
+// Hito 12 — Rastreador de objetivos (victoria)
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Crear un GameObject vacío "ObjectiveTracker" en la escena del nivel principal.
+- Crear un GameObject vacío "ObjectiveTracker" en la escena.
 
 Componentes necesarios:
 - Ninguno adicional.
 
 Referencias del Inspector:
-- boss: arrastrar el componente BossEnemy del jefe final de la escena.
-
-Layers y Tags:
-- Ninguno requerido por este script.
+- boss: arrastrar el GameObject del Boss final de la escena.
 
 Notas:
-- Se suscribe al evento OnBossDefeated del jefe para detectar la victoria.
-- OnVictory es escuchado por GameResultController para mostrar la pantalla de victoria.
-- Si el juego tiene más condiciones de victoria (ej: recuperar la comida),
-  agregar más referencias y llamar CompleteObjective() desde los coleccionables correspondientes.
+- Se suscribe a la muerte del jefe final. Cuando muere, lanza el evento OnVictory
+  para que HUDController o GameResultController muestren los paneles y pausen.
 */
 public class ObjectiveTracker : MonoBehaviour
 {
@@ -30,7 +25,7 @@ public class ObjectiveTracker : MonoBehaviour
 
     private bool objectiveComplete = false;
 
-    // Notifica cuando se cumple el objetivo del nivel.
+    // Evento de victoria del nivel.
     public event Action OnVictory;
 
     private void Start()
@@ -41,7 +36,7 @@ public class ObjectiveTracker : MonoBehaviour
         }
     }
 
-    // Marca el objetivo como completado y lanza el evento de victoria.
+    // Completa el objetivo y dispara el evento de victoria.
     public void CompleteObjective()
     {
         if (objectiveComplete) return;
@@ -50,7 +45,6 @@ public class ObjectiveTracker : MonoBehaviour
         OnVictory?.Invoke();
     }
 
-    // Indica si el objetivo ya fue cumplido.
     public bool IsComplete()
     {
         return objectiveComplete;

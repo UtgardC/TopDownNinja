@@ -1,36 +1,21 @@
 using UnityEngine;
 
-// Hito 5 — Primer enemigo
+// Hito 5 — Enemigo cuerpo a cuerpo (MeleeEnemy)
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Crear un GameObject "MeleeEnemy" con este script.
+- Crear un objeto en la escena con el Sprite del enemigo.
 
 Componentes necesarios:
-- Health en el mismo GameObject (maxHealth configurable en Inspector).
-- Rigidbody2D: Body Type = Dynamic, Gravity Scale = 0, Freeze Rotation Z = true.
-- Collider2D para el cuerpo del enemigo.
+- Todos los requeridos por EnemyBase (Health, Rigidbody2D, Collider2D).
 
-Referencias del Inspector (herencia de EnemyBase):
-- health: arrastrar el componente Health del mismo GameObject.
-- moveSpeed: velocidad de movimiento (recomendado: 2.0).
-- target: arrastrar el Transform del jugador.
-
-Referencias del Inspector (propias):
-- attackDamage: daño que inflige al jugador al contacto.
-- attackRange: distancia mínima al jugador para atacar.
-- attackCooldown: tiempo entre ataques sucesivos.
-- playerLayer: capa del jugador (para detectar colisiones de ataque).
-
-Layers y Tags:
-- Asignar Layer "Enemy" a este GameObject.
-- El jugador debe tener Layer "Player"; asignarla en el campo playerLayer.
-
-Notas:
-- IA: persigue al jugador y lo daña cuando está a attackRange de distancia.
-- Demuestra herencia (extiende EnemyBase) y polimorfismo (sobreescribe TickBehavior).
+Referencias del Inspector (adicionales a EnemyBase):
+- attackDamage: cantidad de vida que resta al jugador al golpearlo.
+- attackRange: distancia máxima a la que puede golpear.
+- attackCooldown: tiempo de espera en segundos entre golpes.
+- playerLayer: seleccionar la Layer del jugador ("Player").
 */
 public class MeleeEnemy : EnemyBase
 {
@@ -51,16 +36,10 @@ public class MeleeEnemy : EnemyBase
         }
     }
 
-    // IA: si está cerca del jugador, ataca; si no, lo persigue.
+    // Sobreescribe la IA de la clase base.
     protected override void TickBehavior()
     {
         float distance = GetDistanceToTarget();
-
-        if (!IsTargetDetected())
-        {
-            StopMovement();
-            return;
-        }
 
         if (distance <= attackRange)
         {
@@ -73,33 +52,33 @@ public class MeleeEnemy : EnemyBase
         }
     }
 
-    // Intenta atacar al jugador si el cooldown lo permite. Devuelve verdadero si atacó.
+    // Ejecuta el ataque si el cooldown está listo.
     private bool TryAttack()
     {
         if (attackCooldownTimer > 0f) return false;
 
         int damage = CalculateAttackDamage();
         ApplyMeleeAttack(damage);
+        NotifyAttackPerformed();
 
         attackCooldownTimer = attackCooldown;
-        NotifyAttackPerformed();
         return true;
     }
 
-    // Calcula el daño del ataque cuerpo a cuerpo.
+    // Calcula el daño del ataque del enemigo.
     private int CalculateAttackDamage()
     {
         return attackDamage;
     }
 
-    // Aplica daño a todos los IDamageable del jugador dentro del rango.
+    // Lanza un círculo de overlap para detectar al jugador y dañarlo.
     private void ApplyMeleeAttack(int damage)
     {
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, attackRange, playerLayer);
 
         foreach (Collider2D hit in hits)
         {
-            IDamageable target = hit.GetComponentInParent<IDamageable>();
+            IDamageable target = hit.GetComponent<IDamageable>();
             if (target != null && target.IsAlive())
             {
                 target.TakeDamage(damage);
@@ -107,6 +86,7 @@ public class MeleeEnemy : EnemyBase
         }
     }
 
+    // Dibuja el rango de ataque en la escena.
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;

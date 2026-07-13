@@ -1,36 +1,22 @@
 using UnityEngine;
 
-// Hito 7 — Segundo enemigo (ranged)
+// Hito 7 — Enemigo a distancia (RangedEnemy)
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Crear un GameObject "RangedEnemy" con este script.
+- Crear un objeto en la escena con el Sprite del enemigo a distancia.
 
 Componentes necesarios:
-- Health en el mismo GameObject.
-- Rigidbody2D: Body Type = Dynamic, Gravity Scale = 0, Freeze Rotation Z = true.
-- Collider2D para el cuerpo del enemigo.
+- Todos los requeridos por EnemyBase (Health, Rigidbody2D, Collider2D).
 
-Referencias del Inspector (herencia de EnemyBase):
-- health: arrastrar el componente Health del mismo GameObject.
-- moveSpeed: velocidad de movimiento (recomendado: 1.5).
-- target: arrastrar el Transform del jugador.
-
-Referencias del Inspector (propias):
-- projectilePrefab: arrastrar el prefab del Projectile.
-- attackDamage: daño que inflige cada proyectil.
-- shootRange: distancia máxima a la que dispara al jugador.
-- stopRange: distancia mínima a la que se mantiene del jugador.
-- shootCooldown: tiempo entre disparos.
-
-Layers y Tags:
-- Asignar Layer "Enemy" a este GameObject.
-
-Notas:
-- IA: mantiene distancia del jugador. Si está en rango, dispara; si está muy lejos, se acerca.
-- Demuestra herencia (extiende EnemyBase) y polimorfismo (sobreescribe TickBehavior).
+Referencias del Inspector (adicionales a EnemyBase):
+- projectilePrefab: arrastrar el Prefab del proyectil (con script Projectile).
+- attackDamage: daño que tendrá el proyectil al crearse.
+- shootRange: rango máximo desde el que empezará a disparar.
+- stopRange: distancia mínima para mantener su posición (si el jugador se acerca más, retrocederá).
+- shootCooldown: cadencia de tiro en segundos.
 */
 public class RangedEnemy : EnemyBase
 {
@@ -52,55 +38,50 @@ public class RangedEnemy : EnemyBase
         }
     }
 
-    // IA: se acerca si está muy lejos, se aleja si está demasiado cerca, dispara en rango.
+    // Sobreescribe la IA para mantener la distancia ideal y disparar.
     protected override void TickBehavior()
     {
         float distance = GetDistanceToTarget();
 
-        if (!IsTargetDetected())
-        {
-            StopMovement();
-            return;
-        }
-
         if (distance > shootRange)
         {
-            // Fuera de rango: se acerca al jugador.
+            // Demasiado lejos: avanzar hacia el jugador.
             MoveTowardsTarget();
         }
         else if (distance < stopRange)
         {
-            // Demasiado cerca: retrocede del jugador.
+            // Demasiado cerca: retroceder en dirección opuesta.
             MoveAwayFromTarget();
         }
         else
         {
-            // En rango ideal: se detiene y dispara.
+            // Distancia ideal: quedarse quieto y disparar.
             StopMovement();
             TryShoot();
         }
     }
 
-    // Mueve al enemigo en dirección opuesta al jugador.
+    // Empuja al enemigo en dirección contraria al jugador para evadir el combate melee.
     private void MoveAwayFromTarget()
     {
         if (target == null) return;
 
         Vector2 direction = ((Vector2)transform.position - (Vector2)target.position).normalized;
-        SetVelocity(direction * moveSpeed);
+        rb.linearVelocity = direction * moveSpeed;
     }
 
-    // Intenta disparar un proyectil si el cooldown lo permite. Devuelve verdadero si disparó.
+    // Dispara si el cooldown está listo.
     private bool TryShoot()
     {
         if (shootCooldownTimer > 0f || projectilePrefab == null || target == null) return false;
 
         ShootProjectile();
+        NotifyAttackPerformed();
         shootCooldownTimer = shootCooldown;
         return true;
     }
 
-    // Instancia un proyectil y lo lanza hacia el jugador.
+    // Instancia el proyectil y lo lanza en dirección al jugador.
     private void ShootProjectile()
     {
         Vector2 direction = ((Vector2)target.position - (Vector2)transform.position).normalized;
@@ -112,10 +93,10 @@ public class RangedEnemy : EnemyBase
         {
             projectile.SetDamage(attackDamage);
             projectile.Launch(direction);
-            NotifyAttackPerformed();
         }
     }
 
+    // Dibuja los rangos de tiro y evasión en la escena.
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;

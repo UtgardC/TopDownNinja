@@ -1,29 +1,24 @@
 using UnityEngine;
 
-// Hito 3 — Movimiento y combate del jugador
+// Hito 3 — Control de estadísticas y modificadores
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Añadir al GameObject del jugador junto a PlayerMovement y PlayerAttack.
+- Añadir al GameObject del jugador ("Player").
 
 Componentes necesarios:
-- Ninguno adicional (los otros scripts leen las propiedades de este).
+- Ninguno adicional.
 
 Referencias del Inspector:
-- moveSpeed: velocidad base de movimiento (unidades/segundo).
-- baseDamage: daño base del ataque principal.
-- attackCooldown: tiempo base entre ataques (segundos).
-
-Layers y Tags:
-- Ninguno requerido por este script.
+- moveSpeed: velocidad de movimiento base.
+- baseDamage: daño por defecto en ataques cuerpo a cuerpo.
+- attackCooldown: tiempo de espera base entre ataques.
 
 Notas:
-- PlayerMovement lee MoveSpeed.
-- PlayerAttack lee Damage y AttackCooldown.
-- TemporaryPowerUpController modifica los multiplicadores para aplicar buffs.
-- Los multiplicadores vuelven a 1.0 cuando el buff termina.
+- Centraliza las estadísticas del jugador para que otros sistemas (como PowerUps)
+  puedan aplicar modificadores temporales de forma ordenada.
 */
 public class PlayerStats : MonoBehaviour
 {
@@ -31,51 +26,43 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private int baseDamage = 10;
     [SerializeField] private float attackCooldown = 0.5f;
 
-    // Multiplicadores temporales (1.0 = sin cambio).
+    // Multiplicadores aplicados por buffs temporales
     private float speedMultiplier = 1f;
     private float damageMultiplier = 1f;
     private float attackSpeedMultiplier = 1f;
 
-    // Velocidad de movimiento real (base × multiplicador de velocidad).
+    // Propiedades públicas que devuelven el valor modificado final
     public float MoveSpeed => moveSpeed * speedMultiplier;
-
-    // Daño real del ataque (base × multiplicador de daño, redondeado).
     public int Damage => Mathf.RoundToInt(baseDamage * damageMultiplier);
-
-    // Cooldown real del ataque (se reduce cuando attackSpeedMultiplier > 1).
     public float AttackCooldown => attackCooldown / attackSpeedMultiplier;
 
-    // Aplica un multiplicador temporal a la velocidad de movimiento.
+    // Métodos para aplicar modificadores (llamados por el TemporaryPowerUpController)
     public void ApplySpeedMultiplier(float multiplier)
     {
         speedMultiplier = multiplier;
     }
 
-    // Aplica un multiplicador temporal al daño.
     public void ApplyDamageMultiplier(float multiplier)
     {
         damageMultiplier = multiplier;
     }
 
-    // Aplica un multiplicador temporal a la velocidad de ataque.
     public void ApplyAttackSpeedMultiplier(float multiplier)
     {
         attackSpeedMultiplier = multiplier;
     }
 
-    // Restaura el multiplicador de velocidad a su valor base.
+    // Métodos para restablecer los modificadores a su valor base (x1)
     public void ResetSpeedMultiplier()
     {
         speedMultiplier = 1f;
     }
 
-    // Restaura el multiplicador de daño a su valor base.
     public void ResetDamageMultiplier()
     {
         damageMultiplier = 1f;
     }
 
-    // Restaura el multiplicador de velocidad de ataque a su valor base.
     public void ResetAttackSpeedMultiplier()
     {
         attackSpeedMultiplier = 1f;

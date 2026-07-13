@@ -1,37 +1,33 @@
 using System;
 using UnityEngine;
 
-// Hito 8 — Coleccionables y puntuación
+// Hito 8 — Registro de puntuación
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Añadir al GameObject del jugador.
+- Añadir al GameObject del jugador ("Player").
 
 Componentes necesarios:
 - Ninguno adicional.
 
 Referencias del Inspector:
-- Ninguna (el puntaje es interno).
-
-Layers y Tags:
-- Ninguno requerido por este script.
+- Ninguna requerida.
 
 Notas:
-- Suscribir OnScoreChanged desde HUDController para mostrar el puntaje actualizado.
-- Los coleccionables llaman a AddScore a través de PlayerCollector.ScoreTracker.
+- Ofrece el evento OnScoreChanged para notificar a la UI sobre cambios en los puntos.
 */
 public class ScoreTracker : MonoBehaviour
 {
     private int score = 0;
 
-    // Notifica cuando el puntaje cambia. Envía el puntaje nuevo.
+    // Evento que notifica la nueva puntuación cada vez que se añaden puntos.
     public event Action<int> OnScoreChanged;
 
     public int Score => score;
 
-    // Agrega puntos al puntaje actual y notifica el cambio.
+    // Suma puntos al marcador y lanza OnScoreChanged.
     public void AddScore(int amount)
     {
         if (amount < 0) amount = 0;
@@ -40,7 +36,7 @@ public class ScoreTracker : MonoBehaviour
         OnScoreChanged?.Invoke(score);
     }
 
-    // Devuelve el puntaje actual. Útil para mostrarlo en HUD o pantalla final.
+    // Devuelve la puntuación acumulada.
     public int GetScore()
     {
         return score;

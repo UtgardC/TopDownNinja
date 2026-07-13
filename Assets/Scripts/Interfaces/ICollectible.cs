@@ -1,10 +1,13 @@
-// Hito 1 — Contratos y bases
+// Hito 1 — Interfaces del sistema de combate y recelección
 
-// Contrato para objetos que el jugador puede recoger.
-// Implementado por: CoinCollectible, FoodCollectible, BuffCollectible.
-// Permite que PlayerCollector recolecte objetos distintos con el mismo flujo.
+/*
+CONFIGURACIÓN EN UNITY
+- No se añaden a ningún GameObject directamente (son interfaces).
+*/
+
+// Interfaz para objetos del escenario que el jugador puede recoger al tocarlos.
 public interface ICollectible
 {
-    // Ejecuta el efecto del coleccionable. collector es el jugador que lo recoge.
+    // Se ejecuta cuando el jugador (a través de su PlayerCollector) entra en contacto con el objeto.
     void Collect(PlayerCollector collector);
 }

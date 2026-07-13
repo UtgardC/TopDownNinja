@@ -1,33 +1,20 @@
 using UnityEngine;
 
-// Hito 9 — Power-up temporal
+// Hito 9 — Buff recolectable
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Crear un GameObject en el nivel que represente el power-up.
-  Se recomienda crear un prefab por cada tipo de buff con sprites diferentes.
+- Crear un objeto en la escena con SpriteRenderer.
 
 Componentes necesarios:
-- Collider2D configurado como Trigger.
-- SpriteRenderer con el sprite correspondiente al tipo de buff.
+- Collider2D (ej: CircleCollider2D) con "Is Trigger" marcado = true.
 
 Referencias del Inspector:
-- buffType: tipo de estadística que se potencia (Speed, Damage o AttackSpeed).
-- multiplier: valor del multiplicador (ej: 2.0 = el doble de la estadística base).
-- duration: duración del buff en segundos.
-
-Layers y Tags:
-- Ninguno requerido por este script.
-
-Notas:
-- El mismo script sirve para los tres tipos de buff.
-  Crear tres prefabs distintos cambiando el buffType en el Inspector.
-  Ejemplos de configuración:
-    * Speed Buff:       buffType=Speed,       multiplier=2.0, duration=5
-    * Damage Buff:      buffType=Damage,      multiplier=2.0, duration=5
-    * AttackSpeed Buff: buffType=AttackSpeed, multiplier=2.0, duration=5
+- buffType: tipo de estadística que modificará (Speed, Damage, AttackSpeed).
+- multiplier: multiplicador que se aplicará a la estadística base (ej: 2f para duplicar).
+- duration: cuánto tiempo en segundos durará el efecto antes de desvanecerse.
 */
 public class BuffCollectible : MonoBehaviour, ICollectible
 {
@@ -39,7 +26,7 @@ public class BuffCollectible : MonoBehaviour, ICollectible
     public float Multiplier => multiplier;
     public float Duration => duration;
 
-    // Activa el buff en el jugador y desactiva el objeto del nivel.
+    // Se ejecuta al ser tocado por el PlayerCollector. Delega al PowerUpController.
     public void Collect(PlayerCollector collector)
     {
         collector.PowerUpController.ActivateBuff(buffType, multiplier, duration);

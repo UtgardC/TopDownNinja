@@ -1,43 +1,25 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
-// Hito 11 — Jefe final
+// Hito 11 — Jefe final (BossEnemy)
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Crear un GameObject "Boss" con este script.
+- Crear un objeto de gran tamaño (escala recomendada x2 o x3) con el Sprite del Boss.
 
 Componentes necesarios:
-- Health en el mismo GameObject (recomendado: maxHealth = 300 o más).
-- Rigidbody2D: Body Type = Dynamic, Gravity Scale = 0, Freeze Rotation Z = true.
-- Collider2D para el cuerpo del jefe.
+- Todos los requeridos por EnemyBase (Health, Rigidbody2D, Collider2D).
 
-Referencias del Inspector (herencia de EnemyBase):
-- health: arrastrar el componente Health del mismo GameObject.
-- moveSpeed: velocidad de movimiento (recomendado: 1.5).
-- target: arrastrar el Transform del jugador.
-
-Referencias del Inspector (propias):
-- attackDamage: daño del ataque cuerpo a cuerpo.
-- attackRange: radio del ataque.
-- attackCooldown: tiempo entre ataques básicos.
-- chargeSpeed: velocidad de la embestida especial.
-- chargeCooldown: tiempo entre embestidas.
-- chargeDistance: distancia mínima al jugador para activar la embestida.
-- playerLayer: Layer del jugador.
-
-Layers y Tags:
-- Asignar Layer "Enemy" a este GameObject.
-- El jugador debe tener Layer "Player".
-
-Notas:
-- Comportamiento: persigue al jugador y ataca cuerpo a cuerpo.
-  Cuando el jugador está lejos, ejecuta una embestida especial (carga rápida).
-- OnBossDefeated es escuchado por ObjectiveTracker para registrar la victoria.
-- Demuestra herencia (EnemyBase) y polimorfismo (TickBehavior con lógica propia).
+Referencias del Inspector (adicionales a EnemyBase):
+- attackDamage: daño del golpe normal.
+- attackRange: rango del golpe normal.
+- attackCooldown: cadencia de golpes melee del jefe.
+- chargeSpeed: velocidad punta al realizar la embestida.
+- chargeCooldown: tiempo de espera entre embestidas.
+- chargeDistance: distancia necesaria desde la que puede iniciar una embestida.
+- playerLayer: seleccionar la Layer del jugador ("Player").
 */
 public class BossEnemy : EnemyBase
 {
@@ -47,22 +29,18 @@ public class BossEnemy : EnemyBase
     [SerializeField] private float chargeSpeed = 8f;
     [SerializeField] private float chargeCooldown = 5f;
     [SerializeField] private float chargeDistance = 4f;
-    [SerializeField] private int chargeDamage = 30;
-    [SerializeField] private float chargeHitRadius = 1f;
     [SerializeField] private LayerMask playerLayer;
 
     private float attackCooldownTimer = 0f;
     private float chargeCooldownTimer = 0f;
     private bool isCharging = false;
-    private readonly HashSet<IDamageable> chargeTargetsHit = new HashSet<IDamageable>();
 
-    // Notifica cuando el jefe es derrotado. Escuchado por ObjectiveTracker.
+    // Evento para avisar al ObjectiveTracker que el jefe ha muerto.
     public event Action OnBossDefeated;
 
     protected override void Start()
     {
         base.Start();
-        // Suscribir la derrota del jefe al evento de muerte de Health.
         if (health != null)
         {
             health.OnDied += NotifyBossDefeated;
@@ -77,22 +55,12 @@ public class BossEnemy : EnemyBase
         if (chargeCooldownTimer > 0f) chargeCooldownTimer -= Time.deltaTime;
     }
 
-    // IA: si está cerca, ataca cuerpo a cuerpo; si está lejos y puede, embiste.
+    // Sobreescribe la IA: si el jugador está lejos echa una embestida, si no va a combate cuerpo a cuerpo.
     protected override void TickBehavior()
     {
-        if (isCharging)
-        {
-            ApplyChargeDamage();
-            return;
-        }
+        if (isCharging) return; // Si está embistiendo, no decide acciones normales.
 
         float distance = GetDistanceToTarget();
-
-        if (!IsTargetDetected())
-        {
-            StopMovement();
-            return;
-        }
 
         if (distance <= attackRange)
         {
@@ -109,7 +77,7 @@ public class BossEnemy : EnemyBase
         }
     }
 
-    // Intenta ejecutar el ataque cuerpo a cuerpo. Devuelve verdadero si atacó.
+    // Ataque melee básico circular.
     private bool TryMeleeAttack()
     {
         if (attackCooldownTimer > 0f) return false;
@@ -117,7 +85,7 @@ public class BossEnemy : EnemyBase
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, attackRange, playerLayer);
         foreach (Collider2D hit in hits)
         {
-            IDamageable damageable = hit.GetComponentInParent<IDamageable>();
+            IDamageable damageable = hit.GetComponent<IDamageable>();
             if (damageable != null && damageable.IsAlive())
             {
                 damageable.TakeDamage(attackDamage);
@@ -129,20 +97,19 @@ public class BossEnemy : EnemyBase
         return true;
     }
 
-    // Inicia una embestida rápida hacia el jugador.
+    // Inicia la embestida: sale disparado hacia la posición del jugador.
     private void StartCharge()
     {
         if (target == null) return;
 
         isCharging = true;
-        chargeTargetsHit.Clear();
         Vector2 direction = ((Vector2)target.position - (Vector2)transform.position).normalized;
-        SetVelocity(direction * chargeSpeed);
-        NotifySpecialPerformed();
+        rb.linearVelocity = direction * chargeSpeed;
 
-        // La embestida dura medio segundo y luego el jefe vuelve al comportamiento normal.
+        // Detiene la embestida a la fuerza tras medio segundo.
         Invoke(nameof(EndCharge), 0.5f);
         chargeCooldownTimer = chargeCooldown;
+        NotifySpecialPerformed();
     }
 
     private void EndCharge()
@@ -151,32 +118,18 @@ public class BossEnemy : EnemyBase
         StopMovement();
     }
 
-    private void ApplyChargeDamage()
-    {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, chargeHitRadius, playerLayer);
-        foreach (Collider2D hit in hits)
-        {
-            IDamageable damageable = hit.GetComponentInParent<IDamageable>();
-            if (damageable != null && damageable.IsAlive() && chargeTargetsHit.Add(damageable))
-            {
-                damageable.TakeDamage(chargeDamage);
-            }
-        }
-    }
-
     private void NotifyBossDefeated()
     {
         OnBossDefeated?.Invoke();
     }
 
+    // Visualiza el rango melee (rojo) y el rango de embestida (magenta).
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, chargeDistance);
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(transform.position, chargeHitRadius);
     }
 
     protected override void OnDestroy()

@@ -1,25 +1,19 @@
 using UnityEngine;
 
-// Hito 10 — Pergaminos y habilidades
+// Hito 10 — Habilidad base de Pergamino (Clase abstracta)
 
 /*
-ScrollAbility es una clase abstracta que define el contrato común
-para todas las habilidades de pergamino del ninja.
-
-No se añade directamente a ningún GameObject. Extenderla con clases concretas
-como FireAbility para implementar habilidades específicas.
-
-Demuestra: Abstracción (solo define qué puede hacer, no cómo) y
-           Herencia (FireAbility extiende esta clase).
+CONFIGURACIÓN EN UNITY
+- NO añadir directamente. Usar FireAbility o clases derivadas.
 */
 public abstract class ScrollAbility : MonoBehaviour
 {
     [SerializeField] protected float cooldown = 1.5f;
     [SerializeField] protected int damage = 15;
 
-    private float cooldownTimer = 0f;
-
     public abstract ScrollType AbilityType { get; }
+
+    private float cooldownTimer = 0f;
 
     protected virtual void Update()
     {
@@ -29,27 +23,25 @@ public abstract class ScrollAbility : MonoBehaviour
         }
     }
 
-    // Intenta usar la habilidad. Devuelve verdadero si se pudo activar.
+    // Método principal para intentar lanzar la habilidad.
     public bool TryUse(Vector2 direction)
     {
         if (!CanUse()) return false;
 
-        if (!Execute(direction)) return false;
-
+        Execute(direction);
         cooldownTimer = cooldown;
         return true;
     }
 
-    // Indica si la habilidad puede usarse ahora (cooldown terminado).
+    // Comprueba si el cooldown está listo.
     public bool CanUse()
     {
         return cooldownTimer <= 0f;
     }
 
-    // Cada habilidad concreta define su efecto aquí.
-    protected abstract bool Execute(Vector2 direction);
+    // Lógica interna de cada habilidad concreta (ej: instanciar bola de fuego).
+    protected abstract void Execute(Vector2 direction);
 
-    // Devuelve el tiempo restante de cooldown. Útil para mostrar en HUD.
     public float GetCooldownRemaining()
     {
         return cooldownTimer;

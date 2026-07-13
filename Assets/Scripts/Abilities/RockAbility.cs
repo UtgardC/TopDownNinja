@@ -12,7 +12,7 @@ public class RockAbility : ScrollAbility
 
     public override ScrollType AbilityType => ScrollType.Rock;
 
-    protected override bool Execute(Vector2 direction)
+    protected override void Execute(Vector2 direction)
     {
         Vector2 normalizedDirection = direction.sqrMagnitude > 0.001f ? direction.normalized : Vector2.down;
         Vector2 effectPosition = (Vector2)transform.position + normalizedDirection * effectOffset;
@@ -34,8 +34,6 @@ public class RockAbility : ScrollAbility
                 target.TakeDamage(damage);
             }
         }
-
-        return true;
     }
 
     private void OnDrawGizmosSelected()

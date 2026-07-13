@@ -1,32 +1,24 @@
 using UnityEngine;
 
-// Hito 8 — Coleccionables y puntuación
+// Hito 8 — Comida recolectable (curación)
 
 /*
 CONFIGURACIÓN EN UNITY
 
 GameObject:
-- Crear un GameObject en el nivel que represente comida (poción, manzana, etc.).
+- Crear un objeto en la escena con SpriteRenderer.
 
 Componentes necesarios:
-- Collider2D configurado como Trigger.
-- SpriteRenderer con el sprite de comida correspondiente.
+- Collider2D (ej: CircleCollider2D) con "Is Trigger" marcado = true.
 
 Referencias del Inspector:
-- healAmount: cantidad de vida que recupera el jugador al recogerla.
-
-Layers y Tags:
-- Ninguno requerido por este script.
-
-Notas:
-- Llama a Health.Heal a través del PlayerCollector.
-- Solo tiene efecto si el jugador no tiene la vida al máximo, pero Heal ya lo maneja.
+- healAmount: cantidad de vida que restaura al jugador.
 */
 public class FoodCollectible : MonoBehaviour, ICollectible
 {
     [SerializeField] private int healAmount = 25;
 
-    // Cura al jugador y desactiva el objeto.
+    // Se ejecuta al ser tocado por el PlayerCollector. Cura al jugador y se desactiva.
     public void Collect(PlayerCollector collector)
     {
         collector.Health.Heal(healAmount);
