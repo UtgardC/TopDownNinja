@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = direction.normalized * stats.MoveSpeed;
     }
 
-    // Expone el vector de entrada actual de movimiento del jugador.
+    // Expone la entrada de movimiento sin procesar para el Animator.
     public Vector2 MoveInput => moveInput;
 
     // Devuelve la última dirección hacia la que el jugador apuntaba o se movía.
@@ -58,6 +58,6 @@ public class PlayerMovement : MonoBehaviour
         if (moveInput != Vector2.zero)
             return moveInput.normalized;
 
-        return Vector2.zero; // Modificado a Vector2.zero para detener animaciones.
+        return Vector2.down; // Por defecto mira hacia abajo.
     }
 }

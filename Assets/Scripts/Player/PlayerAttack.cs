@@ -31,6 +31,12 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private LayerMask enemyLayer;
 
     private float attackCooldownTimer = 0f;
+    private PlayerAnimator playerAnimator;
+
+    private void Awake()
+    {
+        playerAnimator = GetComponent<PlayerAnimator>();
+    }
 
     private void Update()
     {
@@ -57,11 +63,13 @@ public class PlayerAttack : MonoBehaviour
         int damage = CalculateDamage();
         ApplyAttackInArea(damage);
 
+        if (playerAnimator != null) playerAnimator.TriggerAttack();
+
         attackCooldownTimer = stats.AttackCooldown;
         return true;
     }
 
-    // Calcula el daño final del ataque aplicando modificadores si los hubiera.
+    // Computa el daño final del ataque aplicando modificadores si los hubiera.
     public int CalculateDamage()
     {
         return stats.Damage;
