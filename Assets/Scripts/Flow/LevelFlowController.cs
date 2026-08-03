@@ -46,6 +46,12 @@ public class LevelFlowController : MonoBehaviour
         StartCoroutine(LoadLevelCoroutine(SceneManager.GetActiveScene().name));
     }
 
+    // Carga un nivel específico por nombre.
+    public void LoadCustomLevel(string sceneName)
+    {
+        StartCoroutine(LoadLevelCoroutine(sceneName));
+    }
+
     // Corrutina que activa la animación y espera antes de cargar.
     private System.Collections.IEnumerator LoadLevelCoroutine(string sceneName)
     {

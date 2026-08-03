@@ -36,7 +36,15 @@ public class LevelExit : MonoBehaviour
             return;
         }
 
-        SceneManager.LoadScene(nextSceneName);
+        LevelFlowController flow = FindObjectOfType<LevelFlowController>();
+        if (flow != null)
+        {
+            flow.LoadCustomLevel(nextSceneName);
+        }
+        else
+        {
+            SceneManager.LoadScene(nextSceneName);
+        }
     }
 
     private void OnDrawGizmos()
