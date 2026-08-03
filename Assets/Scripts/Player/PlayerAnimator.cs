@@ -58,6 +58,7 @@ public class PlayerAnimator : MonoBehaviour
         if (health != null)
         {
             health.OnDied += HandleDeath;
+            health.OnDamaged += HandleDamaged;
         }
     }
 
@@ -91,6 +92,11 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
+    private void HandleDamaged(int amount)
+    {
+        TriggerHit();
+    }
+
     private void HandleDeath()
     {
         if (animator != null)
@@ -104,6 +110,7 @@ public class PlayerAnimator : MonoBehaviour
         if (health != null)
         {
             health.OnDied -= HandleDeath;
+            health.OnDamaged -= HandleDamaged;
         }
     }
 }

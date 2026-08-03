@@ -143,6 +143,7 @@ GameObject:
   - component: {fileID: 1381070687125250880}
   - component: {fileID: 514502522162700123}
   - component: {fileID: 8868484803704336100}
+  - component: {fileID: 2346998401033273570}
   m_Layer: 9
   m_Name: RangedEnemy
   m_TagString: Untagged
@@ -272,3 +273,19 @@ MonoBehaviour:
   shootRange: 5
   stopRange: 2.5
   shootCooldown: 2
+--- !u!114 &2346998401033273570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4850906494374632728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8bfc321a0128d64e9da7ee92ba21fa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitFlash
+  health: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  hitColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  flashDuration: 0.12

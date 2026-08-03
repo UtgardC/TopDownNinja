@@ -297,6 +297,39 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3355477098125928808, guid: 9cbda012c052e494d8e1f4fd30d718b5, type: 3}
   m_PrefabInstance: {fileID: 1282305032}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &126511189 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5263472994530563101, guid: 9cbda012c052e494d8e1f4fd30d718b5, type: 3}
+  m_PrefabInstance: {fileID: 1282305032}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126511183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 349f93d858f50814786e2796a52aedb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreTracker
+--- !u!114 &126511190 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 183937562126557182, guid: 9cbda012c052e494d8e1f4fd30d718b5, type: 3}
+  m_PrefabInstance: {fileID: 1282305032}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126511183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c93cdc3def27ed4cb3c77e949fcb434, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TemporaryPowerUpController
+--- !u!114 &126511195 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1870937696398653384, guid: 9cbda012c052e494d8e1f4fd30d718b5, type: 3}
+  m_PrefabInstance: {fileID: 1282305032}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126511183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38dc8c0dbfefac4fb09a385fe2ec03a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
 --- !u!4 &126511199 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1887139385160742870, guid: 9cbda012c052e494d8e1f4fd30d718b5, type: 3}
@@ -35992,11 +36025,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26a0767fb7faa6447ad5ea7b91917829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameResultController
-  playerHealth: {fileID: 0}
+  playerHealth: {fileID: 126511195}
   objectiveTracker: {fileID: 0}
   levelFlow: {fileID: 1341294678}
-  victoryPanel: {fileID: 0}
-  defeatPanel: {fileID: 0}
+  victoryPanel: {fileID: 526096056}
+  defeatPanel: {fileID: 1879274372}
   resultDelay: 0.75
 --- !u!4 &1359408899
 Transform:
@@ -46321,9 +46354,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d747ed409d5edce4bb075b12f9d0f3ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDController
-  playerHealth: {fileID: 0}
-  scoreTracker: {fileID: 0}
-  powerUpController: {fileID: 0}
+  playerHealth: {fileID: 126511195}
+  scoreTracker: {fileID: 126511189}
+  powerUpController: {fileID: 126511190}
   healthText: {fileID: 2068788212}
   scoreText: {fileID: 638386394}
   buffText: {fileID: 1529064921}

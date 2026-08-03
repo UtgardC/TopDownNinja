@@ -83,7 +83,7 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider2D hit in hits)
         {
-            IDamageable target = hit.GetComponent<IDamageable>();
+            IDamageable target = hit.GetComponentInParent<IDamageable>();
             if (target != null && target.IsAlive())
             {
                 target.TakeDamage(damage);

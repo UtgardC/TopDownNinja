@@ -143,6 +143,7 @@ GameObject:
   - component: {fileID: 8620393549897705776}
   - component: {fileID: 2403705965526242596}
   - component: {fileID: 7233684531035492329}
+  - component: {fileID: 8567530906298269599}
   m_Layer: 9
   m_Name: MeleeEnemy
   m_TagString: Untagged
@@ -200,7 +201,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.13454863}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -210,7 +211,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.8, y: 0.8}
+  m_Size: {x: 0.8, y: 0.5309027}
   m_EdgeRadius: 0
 --- !u!50 &8620393549897705776
 Rigidbody2D:
@@ -267,9 +268,26 @@ MonoBehaviour:
   health: {fileID: 2403705965526242596}
   moveSpeed: 2
   target: {fileID: 1887139385160742870, guid: 9cbda012c052e494d8e1f4fd30d718b5, type: 3}
+  deathAnimationDuration: 0.8
   attackDamage: 10
-  attackRange: 0.8
+  attackRange: 1.2
   attackCooldown: 1
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
+--- !u!114 &8567530906298269599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7227451030730791533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8bfc321a0128d64e9da7ee92ba21fa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitFlash
+  health: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  hitColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  flashDuration: 0.12

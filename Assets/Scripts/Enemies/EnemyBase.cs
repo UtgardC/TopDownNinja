@@ -33,6 +33,7 @@ public abstract class EnemyBase : MonoBehaviour
     [SerializeField] protected Health health;
     [SerializeField] protected float moveSpeed = 2f;
     [SerializeField] protected Transform target;
+    [SerializeField] private float deathAnimationDuration = 0.8f;
 
     protected Rigidbody2D rb;
 
@@ -107,11 +108,17 @@ public abstract class EnemyBase : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
     }
 
-    // Maneja la muerte del enemigo: detiene el movimiento, lanza el evento y desactiva el objeto.
+    // Maneja la muerte del enemigo: detiene el movimiento, lanza el evento y espera la animación antes de desactivar.
     private void HandleDeath()
     {
         StopMovement();
         OnEnemyDied?.Invoke();
+        StartCoroutine(DeathSequence());
+    }
+
+    private IEnumerator DeathSequence()
+    {
+        yield return new WaitForSeconds(deathAnimationDuration);
         gameObject.SetActive(false);
     }
 

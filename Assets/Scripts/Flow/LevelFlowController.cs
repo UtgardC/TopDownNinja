@@ -23,22 +23,44 @@ public class LevelFlowController : MonoBehaviour
 {
     [SerializeField] private string mainLevelSceneName = "Level1";
     [SerializeField] private string tutorialSceneName = "Tutorial";
+    
+    [Header("Transición")]
+    [SerializeField] private Animator transitionAnimator;
+    [SerializeField] private float transitionTime = 1f;
 
     // Carga el nivel principal (ej: desde el botón del tutorial).
     public void LoadMainLevel()
     {
-        SceneManager.LoadScene(mainLevelSceneName);
+        StartCoroutine(LoadLevelCoroutine(mainLevelSceneName));
     }
 
     // Carga el tutorial (ej: al hacer clic en menú desde derrota/victoria).
     public void LoadTutorial()
     {
-        SceneManager.LoadScene(tutorialSceneName);
+        StartCoroutine(LoadLevelCoroutine(tutorialSceneName));
     }
 
     // Reinicia el nivel actual (ej: desde el botón del panel de derrota).
     public void ReloadCurrentScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        StartCoroutine(LoadLevelCoroutine(SceneManager.GetActiveScene().name));
+    }
+
+    // Corrutina que activa la animación y espera antes de cargar.
+    private System.Collections.IEnumerator LoadLevelCoroutine(string sceneName)
+    {
+        // Si hay una transición asignada, activa el trigger "Start" y espera.
+        if (transitionAnimator != null)
+        {
+            transitionAnimator.SetTrigger("Start");
+            
+            // Si el tiempo está pausado (ej: por derrota), WaitForSeconds no funciona.
+            // Por eso usamos WaitForSecondsRealtime.
+            yield return new WaitForSecondsRealtime(transitionTime);
+        }
+
+        // Se asegura de reanudar el tiempo antes de cargar la nueva escena.
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(sceneName);
     }
 }

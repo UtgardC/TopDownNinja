@@ -49,15 +49,14 @@ public class Projectile : MonoBehaviour
     // Detecta impacto. Si choca con el objetivo correcto, le hace daño y se destruye.
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Verifica si el objeto que impactó está en la Layer objetivo.
         if ((playerLayer.value & (1 << other.gameObject.layer)) == 0) return;
 
-        IDamageable target = other.GetComponent<IDamageable>();
+        IDamageable target = other.GetComponentInParent<IDamageable>();
         if (target != null && target.IsAlive())
         {
             target.TakeDamage(damage);
         }
 
-        Destroy(gameObject); // El proyectil se destruye al impactar.
+        Destroy(gameObject);
     }
 }

@@ -85,7 +85,7 @@ public class BossEnemy : EnemyBase
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, attackRange, playerLayer);
         foreach (Collider2D hit in hits)
         {
-            IDamageable damageable = hit.GetComponent<IDamageable>();
+            IDamageable damageable = hit.GetComponentInParent<IDamageable>();
             if (damageable != null && damageable.IsAlive())
             {
                 damageable.TakeDamage(attackDamage);
