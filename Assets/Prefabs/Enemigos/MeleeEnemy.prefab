@@ -266,9 +266,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MeleeEnemy
   health: {fileID: 2403705965526242596}
   moveSpeed: 2
-  target: {fileID: 0}
-  detectionRange: 8
-  deathDisableDelay: 0.75
+  target: {fileID: 1887139385160742870, guid: 9cbda012c052e494d8e1f4fd30d718b5, type: 3}
   attackDamage: 10
   attackRange: 0.8
   attackCooldown: 1

@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
+    private Vector2 lastFacingDirection = Vector2.down;
 
     private void Awake()
     {
@@ -52,12 +53,15 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 MoveInput => moveInput;
 
     // Devuelve la última dirección hacia la que el jugador apuntaba o se movía.
-    // Utilizado por ScrollLoadout para orientar el disparo de habilidades.
+    // Al soltar las teclas, retorna la última dirección activa en lugar de Vector2.down.
     public Vector2 GetFacingDirection()
     {
         if (moveInput != Vector2.zero)
-            return moveInput.normalized;
+        {
+            lastFacingDirection = moveInput.normalized;
+            return lastFacingDirection;
+        }
 
-        return Vector2.down; // Por defecto mira hacia abajo.
+        return lastFacingDirection;
     }
 }

@@ -266,9 +266,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   health: {fileID: 514502522162700123}
   moveSpeed: 2
-  target: {fileID: 0}
-  detectionRange: 9
-  deathDisableDelay: 0.75
+  target: {fileID: 1887139385160742870, guid: 9cbda012c052e494d8e1f4fd30d718b5, type: 3}
   projectilePrefab: {fileID: 8035430267368334386, guid: 4f1e36fccd0477e42a3e20cbac51fc9d, type: 3}
   attackDamage: 8
   shootRange: 5

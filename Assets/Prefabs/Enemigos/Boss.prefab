@@ -136,17 +136,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossEnemy
   health: {fileID: 1083181951623836042}
   moveSpeed: 1.5
-  target: {fileID: 0}
-  detectionRange: 20
-  deathDisableDelay: 0.75
+  target: {fileID: 1887139385160742870, guid: 9cbda012c052e494d8e1f4fd30d718b5, type: 3}
   attackDamage: 20
   attackRange: 1.2
   attackCooldown: 1.5
   chargeSpeed: 8
   chargeCooldown: 5
   chargeDistance: 4
-  chargeDamage: 30
-  chargeHitRadius: 0.9
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
