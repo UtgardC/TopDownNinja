@@ -82,6 +82,11 @@ public class PlayerAnimator : MonoBehaviour
         {
             animator.SetTrigger("IsAttacking");
         }
+
+        if (effectsAnimator != null)
+        {
+            effectsAnimator.SetTrigger("IsAttacking");
+        }
     }
 
     public void TriggerHit()
@@ -89,6 +94,32 @@ public class PlayerAnimator : MonoBehaviour
         if (animator != null)
         {
             animator.SetTrigger("IsHit");
+        }
+    }
+
+    [SerializeField] private Animator effectsAnimator; // Opcional, para efectos mágicos o auras superpuestas
+
+    public void TriggerCastFire()
+    {
+        if (effectsAnimator != null)
+        {
+            effectsAnimator.SetTrigger("CastFire");
+        }
+        else if (animator != null)
+        {
+            animator.SetTrigger("CastFire");
+        }
+    }
+
+    public void TriggerCastRock()
+    {
+        if (effectsAnimator != null)
+        {
+            effectsAnimator.SetTrigger("CastRock");
+        }
+        else if (animator != null)
+        {
+            animator.SetTrigger("CastRock");
         }
     }
 

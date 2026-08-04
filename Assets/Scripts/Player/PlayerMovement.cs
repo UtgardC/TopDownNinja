@@ -27,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private Vector2 lastFacingDirection = Vector2.down;
+    
+    public bool IsCasting { get; set; } = false;
 
     private void Awake()
     {
@@ -49,6 +51,12 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
+        if (IsCasting)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         Move(moveInput);
     }
 
@@ -58,8 +66,8 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = direction.normalized * stats.MoveSpeed;
     }
 
-    // Expone la entrada de movimiento sin procesar para el Animator.
-    public Vector2 MoveInput => moveInput;
+    // Expone la entrada de movimiento sin procesar para el Animator (0 si está casteando).
+    public Vector2 MoveInput => IsCasting ? Vector2.zero : moveInput;
 
     // Devuelve la última dirección hacia la que el jugador apuntaba o se movía.
     // Al soltar las teclas, retorna la última dirección activa en lugar de Vector2.down.

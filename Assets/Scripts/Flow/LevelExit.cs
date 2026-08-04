@@ -36,7 +36,7 @@ public class LevelExit : MonoBehaviour
             return;
         }
 
-        LevelFlowController flow = FindObjectOfType<LevelFlowController>();
+        LevelFlowController flow = FindFirstObjectByType<LevelFlowController>();
         if (flow != null)
         {
             flow.LoadCustomLevel(nextSceneName);

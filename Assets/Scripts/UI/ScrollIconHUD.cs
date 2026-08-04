@@ -39,7 +39,7 @@ public class ScrollIconHUD : MonoBehaviour
         icon.enabled = true;
 
         // Muestra el ícono activo si la habilidad está lista, o el desactivado si está en cooldown.
-        bool canUse = scrollLoadout.EquippedAbility.CanUse();
+        bool canUse = scrollLoadout.EquippedAbility.CheckCanUse();
         icon.sprite = canUse ? iconReady : iconCooldown;
     }
 }

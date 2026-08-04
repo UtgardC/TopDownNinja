@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,9 +25,10 @@ public class ScrollLoadout : MonoBehaviour
     [SerializeField] private PlayerMovement movement;
 
     // Notifica cambios al HUD cuando el jugador equipa un pergamino distinto.
-    public event Action<ScrollAbility> OnScrollChanged;
+    public event System.Action<ScrollAbility> OnScrollChanged;
 
     public ScrollAbility EquippedAbility => equippedAbility;
+    private bool isCasting = false;
 
     // Mensaje automático enviado por PlayerInput al presionar la tecla del pergamino.
     private void OnUseScroll(InputValue value)
@@ -38,13 +39,46 @@ public class ScrollLoadout : MonoBehaviour
         }
     }
 
-    // Intenta ejecutar la habilidad equipada en la dirección actual de mirada del jugador.
-    public bool TryUseEquippedScroll()
+    // Intenta ejecutar la habilidad equipada iniciando el proceso de casteo.
+    public void TryUseEquippedScroll()
     {
-        if (equippedAbility == null) return false;
+        if (equippedAbility == null || isCasting) return;
+        if (!equippedAbility.CheckCanUse()) return;
 
-        Vector2 direction = movement != null ? movement.GetFacingDirection() : Vector2.down;
-        return equippedAbility.TryUse(direction);
+        StartCoroutine(CastRoutine());
+    }
+
+    private IEnumerator CastRoutine()
+    {
+        isCasting = true;
+        if (movement != null) movement.IsCasting = true;
+
+        // Dispara la animación de casteo si el Animator está presente
+        PlayerAnimator anim = GetComponent<PlayerAnimator>();
+        if (anim != null)
+        {
+            if (equippedAbility.AbilityType == ScrollType.Fire) 
+                anim.TriggerCastFire();
+            else if (equippedAbility.AbilityType == ScrollType.Rock) 
+                anim.TriggerCastRock();
+        }
+
+        // Espera el tiempo de casteo configurado en el pergamino
+        if (equippedAbility.CastTime > 0f)
+        {
+            yield return new WaitForSeconds(equippedAbility.CastTime);
+        }
+
+        // Si el jugador cambió de arma o se canceló por alguna razón a mitad del casteo
+        if (equippedAbility != null && equippedAbility.CheckCanUse())
+        {
+            // Calcula la dirección en el instante exacto del disparo
+            Vector2 direction = movement != null ? movement.GetFacingDirection() : Vector2.down;
+            equippedAbility.ConsumeAndExecute(direction);
+        }
+
+        if (movement != null) movement.IsCasting = false;
+        isCasting = false;
     }
 
     // Cambia el pergamino activo y lanza el evento correspondiente.

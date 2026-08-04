@@ -9,6 +9,7 @@ public class RockAbility : ScrollAbility
     [SerializeField] private float effectOffset = 0.9f;
     [SerializeField] private float effectRadius = 0.8f;
     [SerializeField] private float effectLifetime = 0.6f;
+    [SerializeField] private float damageDelay = 0.2f;
 
     public override ScrollType AbilityType => ScrollType.Rock;
 
@@ -23,7 +24,17 @@ public class RockAbility : ScrollAbility
             Destroy(effect, effectLifetime);
         }
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(effectPosition, effectRadius, targetLayers);
+        StartCoroutine(DealDamageAfterDelay(effectPosition));
+    }
+
+    private System.Collections.IEnumerator DealDamageAfterDelay(Vector2 position)
+    {
+        if (damageDelay > 0f)
+        {
+            yield return new WaitForSeconds(damageDelay);
+        }
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(position, effectRadius, targetLayers);
         HashSet<IDamageable> damagedTargets = new HashSet<IDamageable>();
 
         foreach (Collider2D hit in hits)

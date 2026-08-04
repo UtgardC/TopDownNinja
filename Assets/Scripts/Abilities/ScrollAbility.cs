@@ -12,7 +12,10 @@ public abstract class ScrollAbility : MonoBehaviour
     [SerializeField] protected int damage = 15;
     [SerializeField] protected int maxCharges = 10;
 
+    [SerializeField] protected float castTime = 0.5f;
+
     public abstract ScrollType AbilityType { get; }
+    public float CastTime => castTime;
 
     private float cooldownTimer = 0f;
     private int currentCharges = 0;
@@ -31,21 +34,20 @@ public abstract class ScrollAbility : MonoBehaviour
         }
     }
 
-    // Método principal para intentar lanzar la habilidad.
-    public bool TryUse(Vector2 direction)
+    // Comprueba si el cooldown está listo y si quedan cargas ANTES de iniciar la animación.
+    public bool CheckCanUse()
     {
-        if (!CanUse()) return false;
+        return cooldownTimer <= 0f && currentCharges > 0;
+    }
+
+    // Método que se llama una vez terminada la animación de casteo para disparar el efecto.
+    public void ConsumeAndExecute(Vector2 direction)
+    {
+        if (currentCharges <= 0) return; // Por si algo cambió durante el casteo
 
         Execute(direction);
         cooldownTimer = cooldown;
         currentCharges--;
-        return true;
-    }
-
-    // Comprueba si el cooldown está listo y si quedan cargas.
-    public bool CanUse()
-    {
-        return cooldownTimer <= 0f && currentCharges > 0;
     }
 
     // Recarga las cargas al máximo (útil para cuando se recoge el pergamino de nuevo).
