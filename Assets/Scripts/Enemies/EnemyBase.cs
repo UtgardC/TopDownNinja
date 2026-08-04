@@ -72,7 +72,14 @@ public abstract class EnemyBase : MonoBehaviour
 
     private void TryFindPlayerTarget()
     {
+        // Si hay un target pero no está en ninguna escena (es un Prefab), lo ignoramos.
+        if (target != null && !target.gameObject.scene.IsValid())
+        {
+            target = null;
+        }
+
         if (target != null) return;
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) target = player.transform;
     }
@@ -80,6 +87,13 @@ public abstract class EnemyBase : MonoBehaviour
     protected virtual void Update()
     {
         if (health != null && !health.IsAlive()) return;
+        
+        if (target == null)
+        {
+            TryFindPlayerTarget();
+            if (target == null) return; // Si aún no hay jugador, no hace nada.
+        }
+
         TickBehavior();
     }
 

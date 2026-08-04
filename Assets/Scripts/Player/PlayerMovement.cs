@@ -22,6 +22,7 @@ Referencias del Inspector:
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private PlayerStats stats;
+    [SerializeField] private Health health;
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
@@ -30,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        if (health == null) health = GetComponent<Health>();
     }
 
     // Mensaje automático enviado por el PlayerInput al detectar movimiento.
@@ -40,6 +42,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (health != null && !health.IsAlive())
+        {
+            rb.linearVelocity = Vector2.zero;
+            moveInput = Vector2.zero;
+            return;
+        }
+
         Move(moveInput);
     }
 

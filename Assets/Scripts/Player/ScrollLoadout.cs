@@ -62,6 +62,7 @@ public class ScrollLoadout : MonoBehaviour
         {
             if (ability.AbilityType == type)
             {
+                ability.RefillCharges();
                 EquipAbility(ability);
                 return true;
             }

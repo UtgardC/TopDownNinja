@@ -196,6 +196,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   maxHealth: 100
+  isPlayer: 1
+  autoHealEnabled: 1
+  outOfCombatTime: 5
+  healInterval: 0.5
+  healAmount: 10
 --- !u!114 &2655802522592707573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,6 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   stats: {fileID: 2655802522592707573}
+  health: {fileID: 0}
 --- !u!114 &6002815902756949749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,6 +317,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FireAbility
   cooldown: 1.5
   damage: 15
+  maxCharges: 10
   fireProjectilePrefab: {fileID: 3991938888909533690, guid: d3cb61c8abb3e834084012b1df01b914, type: 3}
 --- !u!114 &3108553712984889688
 MonoBehaviour:
@@ -326,6 +333,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RockAbility
   cooldown: 2.5
   damage: 30
+  maxCharges: 10
   rockEffectPrefab: {fileID: 6051143176948788333, guid: a0595c190e2122b458ecabb3853ef68f, type: 3}
   targetLayers:
     serializedVersion: 2

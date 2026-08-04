@@ -58,6 +58,9 @@ public class PlayerAttack : MonoBehaviour
     // Intenta realizar un ataque. Devuelve true si el ataque fue ejecutado.
     public bool TryAttack()
     {
+        Health health = GetComponent<Health>();
+        if (health != null && !health.IsAlive()) return false;
+        
         if (attackCooldownTimer > 0f) return false;
 
         int damage = CalculateDamage();

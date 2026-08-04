@@ -170,10 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
   speed: 7
-  targetLayers:
+  playerLayer:
     serializedVersion: 2
     m_Bits: 512
-  blockingLayers:
-    serializedVersion: 2
-    m_Bits: 64
   lifetime: 4

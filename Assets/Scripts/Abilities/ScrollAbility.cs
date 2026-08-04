@@ -10,10 +10,18 @@ public abstract class ScrollAbility : MonoBehaviour
 {
     [SerializeField] protected float cooldown = 1.5f;
     [SerializeField] protected int damage = 15;
+    [SerializeField] protected int maxCharges = 10;
 
     public abstract ScrollType AbilityType { get; }
 
     private float cooldownTimer = 0f;
+    private int currentCharges = 0;
+
+    protected virtual void Awake()
+    {
+        // Inicializa las cargas al máximo al arrancar
+        currentCharges = maxCharges;
+    }
 
     protected virtual void Update()
     {
@@ -30,13 +38,25 @@ public abstract class ScrollAbility : MonoBehaviour
 
         Execute(direction);
         cooldownTimer = cooldown;
+        currentCharges--;
         return true;
     }
 
-    // Comprueba si el cooldown está listo.
+    // Comprueba si el cooldown está listo y si quedan cargas.
     public bool CanUse()
     {
-        return cooldownTimer <= 0f;
+        return cooldownTimer <= 0f && currentCharges > 0;
+    }
+
+    // Recarga las cargas al máximo (útil para cuando se recoge el pergamino de nuevo).
+    public void RefillCharges()
+    {
+        currentCharges = maxCharges;
+    }
+
+    public int GetCurrentCharges()
+    {
+        return currentCharges;
     }
 
     // Lógica interna de cada habilidad concreta (ej: instanciar bola de fuego).
@@ -45,5 +65,10 @@ public abstract class ScrollAbility : MonoBehaviour
     public float GetCooldownRemaining()
     {
         return cooldownTimer;
+    }
+
+    public float GetMaxCooldown()
+    {
+        return cooldown;
     }
 }

@@ -27,12 +27,21 @@ public class ScoreTracker : MonoBehaviour
 
     public int Score => score;
 
+    private void Awake()
+    {
+        if (PlayerPrefs.HasKey("PlayerScore"))
+        {
+            score = PlayerPrefs.GetInt("PlayerScore");
+        }
+    }
+
     // Suma puntos al marcador y lanza OnScoreChanged.
     public void AddScore(int amount)
     {
         if (amount < 0) amount = 0;
 
         score += amount;
+        PlayerPrefs.SetInt("PlayerScore", score);
         OnScoreChanged?.Invoke(score);
     }
 

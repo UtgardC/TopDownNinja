@@ -27,8 +27,17 @@ Notas:
 public class Health : MonoBehaviour, IDamageable
 {
     [SerializeField] private int maxHealth = 100;
+    [SerializeField] private bool isPlayer = false;
+
+    [Header("Auto Regeneración")]
+    [SerializeField] private bool autoHealEnabled = false;
+    [SerializeField] private float outOfCombatTime = 5f;
+    [SerializeField] private float healInterval = 0.5f;
+    [SerializeField] private int healAmount = 10; // 10 equivale a 1 corazón
 
     private int currentHealth;
+    private float timeSinceLastDamage = 0f;
+    private float healTimer = 0f;
 
     // Evento que notifica cambios en la salud. Pasa (vidaActual, vidaMaxima).
     public event Action<int, int> OnHealthChanged;
@@ -44,7 +53,35 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Awake()
     {
-        currentHealth = maxHealth;
+        if (isPlayer && PlayerPrefs.HasKey("PlayerHealth"))
+        {
+            currentHealth = PlayerPrefs.GetInt("PlayerHealth");
+        }
+        else
+        {
+            currentHealth = maxHealth;
+        }
+    }
+
+    private void Update()
+    {
+        if (!autoHealEnabled || !IsAlive() || currentHealth >= maxHealth) return;
+
+        timeSinceLastDamage += Time.deltaTime;
+        
+        if (timeSinceLastDamage >= outOfCombatTime)
+        {
+            healTimer += Time.deltaTime;
+            if (healTimer >= healInterval)
+            {
+                healTimer -= healInterval; // Reiniciamos el temporizador para el siguiente tick
+                Heal(healAmount);
+            }
+        }
+        else
+        {
+            healTimer = 0f;
+        }
     }
 
     // Resta vida a la entidad. Si llega a 0, lanza OnDied.
@@ -56,11 +93,20 @@ public class Health : MonoBehaviour, IDamageable
         currentHealth -= amount;
         if (currentHealth < 0) currentHealth = 0;
 
+        timeSinceLastDamage = 0f; // Reinicia el contador de fuera de combate
+
+        if (isPlayer) PlayerPrefs.SetInt("PlayerHealth", currentHealth);
+
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         OnDamaged?.Invoke(amount);
 
         if (currentHealth == 0)
         {
+            if (isPlayer) 
+            {
+                PlayerPrefs.DeleteKey("PlayerHealth");
+                PlayerPrefs.DeleteKey("PlayerScore");
+            }
             OnDied?.Invoke();
         }
     }
@@ -73,6 +119,8 @@ public class Health : MonoBehaviour, IDamageable
 
         currentHealth += amount;
         if (currentHealth > maxHealth) currentHealth = maxHealth;
+
+        if (isPlayer) PlayerPrefs.SetInt("PlayerHealth", currentHealth);
 
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
@@ -87,6 +135,8 @@ public class Health : MonoBehaviour, IDamageable
     public void RestoreToFull()
     {
         currentHealth = maxHealth;
+        if (isPlayer) PlayerPrefs.SetInt("PlayerHealth", currentHealth);
+        
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 }
