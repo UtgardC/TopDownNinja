@@ -1337,7 +1337,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 307481382}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 934607387}
+        m_TargetAssemblyTypeName: GameResultController, Assembly-CSharp
+        m_MethodName: OnClickQuit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &307481382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3088,7 +3100,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 826619312}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 934607387}
+        m_TargetAssemblyTypeName: GameResultController, Assembly-CSharp
+        m_MethodName: OnClickQuit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &826619312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3323,8 +3347,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -615.1, y: 421.6}
-  m_SizeDelta: {x: 157.3632, y: 49.2523}
+  m_AnchoredPosition: {x: -572.2678, y: 421.6}
+  m_SizeDelta: {x: 243.0275, y: 49.2523}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &887323959
 MonoBehaviour:
@@ -68931,7 +68955,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1739562244}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 934607387}
+        m_TargetAssemblyTypeName: GameResultController, Assembly-CSharp
+        m_MethodName: OnClickRestart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1739562244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69304,7 +69340,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1870153845}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 934607387}
+        m_TargetAssemblyTypeName: GameResultController, Assembly-CSharp
+        m_MethodName: OnClickRestart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1870153845
 MonoBehaviour:
   m_ObjectHideFlags: 0
