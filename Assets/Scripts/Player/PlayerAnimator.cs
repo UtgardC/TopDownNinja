@@ -34,6 +34,10 @@ public class PlayerAnimator : MonoBehaviour
 
     private Animator animator;
 
+    [SerializeField] private Animator effectsAnimator; // Opcional, para efectos mágicos o auras superpuestas
+    [SerializeField] private bool rotateEffectsToFacing = false;
+    [SerializeField] private float effectsRotationOffset = 90f;
+
     private void Awake()
     {
         // Si hay dos Animators (raíz e hijo), usa el del hijo porque ahí están los clips.
@@ -41,7 +45,7 @@ public class PlayerAnimator : MonoBehaviour
         Animator[] animators = GetComponentsInChildren<Animator>(true);
         foreach (Animator a in animators)
         {
-            if (a.gameObject != gameObject)
+            if (a.gameObject != gameObject && a != effectsAnimator)
             {
                 animator = a;
                 break;
@@ -74,6 +78,13 @@ public class PlayerAnimator : MonoBehaviour
         Vector2 facing = movement.GetFacingDirection();
         animator.SetFloat("MoveX", facing.x);
         animator.SetFloat("MoveY", facing.y);
+
+        // Opcional: Rota el objeto de efectos para que apunte hacia donde miramos
+        if (rotateEffectsToFacing && effectsAnimator != null)
+        {
+            float angle = Mathf.Atan2(facing.y, facing.x) * Mathf.Rad2Deg;
+            effectsAnimator.transform.rotation = Quaternion.Euler(0, 0, angle + effectsRotationOffset);
+        }
     }
 
     public void TriggerAttack()
@@ -96,8 +107,6 @@ public class PlayerAnimator : MonoBehaviour
             animator.SetTrigger("IsHit");
         }
     }
-
-    [SerializeField] private Animator effectsAnimator; // Opcional, para efectos mágicos o auras superpuestas
 
     public void TriggerCastFire()
     {

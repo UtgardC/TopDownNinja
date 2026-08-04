@@ -457,8 +457,8 @@ MonoBehaviour:
     m_Bits: 512
   effectOffset: 2
   effectRadius: 1.5
-  effectLifetime: 0.5
-  damageDelay: 0.2
+  effectLifetime: 1
+  damageDelay: 0.5
 --- !u!114 &8910297791633812312
 MonoBehaviour:
   m_ObjectHideFlags: 0
